@@ -1,0 +1,33 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <h1 class="service_h1 col-12">Закрытые наряды</h1>
+        <ul class="row name_fields col-12">
+            <li class="col-1">№ З/Н</li>
+            <li class="col-5">Клиент</li>
+            <li class="col-2">VIN</li>
+            <li class="col-2">Регистрационный номер</li>
+            <li class="col-1">Дата открытия наряда</li>
+            <li class="col-1">Дата закрытия наряда</li>
+        </ul>
+        {% for order in orders %}
+
+        <a href="{% url 'worksorder' order.id %}" class="row col-12 order_box">
+        <ul class="row spis_orders col-12">
+            <li class="col-1">{{ order.id }}</li>
+            <li class="col-5" style="text-align: left;">{{ order.client }}</li>
+            <li class="col-2">{{ order.vin_number }}</li>
+            <li class="col-2">{{ order.registration_number }}</li>
+            <li class="col-1">{{ order.date_start|date:'d.m.Y' }}</li>
+            <li class="col-1">{{ order.date_completed|date:'d.m.Y' }}</li>
+        </ul>
+        </a>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

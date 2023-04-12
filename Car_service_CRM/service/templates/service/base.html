@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/setka.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<footer>
+        <div class="row justify__content__end">
+
+            <ul class="row col-12 footer_menu">
+
+                {% if user.is_authenticated %}
+                <li class="col-1">{{ user.username }}</li>
+                <li class="col-2"><a href="">Зарегистрировать</a></li>
+                <li class="col-1">
+                    <form action="{% url 'logoutuser' %}" method="post">
+                        {% csrf_token %}
+                        <button>Выйти</button>
+                    </form>
+                </li>
+                {% endif %}
+
+            </ul>
+
+        </div>
+
+     <div class="row service__base_menu col-12">
+         <ul class="row col-12">
+
+             {% if user.is_authenticated %}
+             <li class="col-2"><a href="{% url 'index' %}">Открытые з/наряды</a></li>
+             <li class="col-2"><a href="{% url 'closed_orders' %}">Закрытые з/наряд</a></li>
+             {% endif %}
+
+         </ul>
+     </div>
+</footer>
+
+<body>
+
+
+<div class="container">
+        <div class="row">
+
+            <div class="col-12">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+
+        </div>
+</div>
+
+<script src="{% static 'js/jquery-3.6.4.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

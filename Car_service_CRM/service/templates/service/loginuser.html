@@ -1,0 +1,25 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify__content__center loginuser">
+
+        {% if user.is_authenticated %}
+        {% else %}
+        <h1 class="col-12 loginuser">Авторизация в системе</h1>
+        <div class="col-12 error">
+            <small>{{ error }}</small>
+        </div>
+
+        <form method="post" class="form_user col-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form_btn col-12">
+                <button>Войти</button>
+            </div>
+        </form>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

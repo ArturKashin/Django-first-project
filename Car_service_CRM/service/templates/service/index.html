@@ -1,0 +1,59 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <div class="row add__order_menu service__base_menu col-12">
+            <ul class="row col-12">
+                {% if user.is_authenticated %}
+                <li class="col-2 add_ord"><label for="add_order">Создать з/наряд</label><input id="add_order" type="checkbox"></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        {{ error }}
+
+        <div class="container">
+        <div class="row">
+            <div class="row col-6 add_order">
+
+                <form method="POST" class="row col-9">
+                    {% csrf_token %}
+                    {{ form__add_order }}
+                    <button class="col-6">Создать</button>
+                    <button type="reset" class="col-4">Очистить</button>
+                </form>
+
+            </div>
+        </div>
+</div>
+
+
+        <h1 class="service_h1 col-12">Открытые наряды</h1>
+        <ul class="row name_fields col-12">
+            <li class="col-1">№ З/Н</li>
+            <li class="col-6">Клиент</li>
+            <li class="col-2">VIN</li>
+            <li class="col-2">Регистрационный номер</li>
+            <li class="col-1">Дата открытия наряда</li>
+        </ul>
+        {% for order in orders %}
+
+        <a href="{% url 'worksorder' order.id %}" class="row col-12 order_box">
+            <ul class="row spis_orders col-12">
+                <li class="col-1">{{ order.id }}</li>
+                <li class="col-6" style="text-align: left;">{{ order.client }}</li>
+                <li class="col-2">{{ order.vin_number }}</li>
+                <li class="col-2">{{ order.registration_number }}</li>
+                <li class="col-1">{{ order.date_start|date:'d.m.Y' }}</li>
+            </ul>
+        </a>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+
+{% endblock %}
