@@ -10,24 +10,49 @@
                 {% if user.is_authenticated %}
                 <li class="col-2 add_works"><label for="add_work">Добавить работу</label>
                     <input id="add_work" type="checkbox"></li>
+                <li class="col-2 add_parts"><label for="add_parts">Добавить запчасть</label>
+                    <input id="add_parts" type="checkbox"></li>
                 {% endif %}
             </ul>
         </div>
 
-        {{ error }}
+        <div class="row col-12 order_info">
 
-        <div class="container">
-        <div class="row">
+            <ul class="row col-12">
+                <li class="col-3">{{ order.client }}</li>
+                <li class="col-2">{{ order.vin_number }}</li>
+                <li class="col-2">{{ order.registration_number }}</li>
+                <li class="col-5" style="text-align:right">
+                    {% if order.final_price %}
+                    Итог: {{ order.final_price }}
+                    {% else %}
+                    Итог: 0,00
+                    {% endif %}
+                </li>
+
+            </ul>
+        </div>
+
             <div class="row col-6 add_work">
 
                 <form method="POST" class="row col-9">
                     {% csrf_token %}
-                    {{ form.as_table }}
+                    {{ form.as_p }}
                     <button class="col-6">Создать</button>
                     <button type="reset" class="col-4">Очистить</button>
                 </form>
 
             </div>
+
+            <div class="col-6 edit_work">
+                <form action="POST" class="row col-9">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="col-6">Сохранить</button>
+                    <button type="reset" class="col-4">Очистить</button>
+                </form>
+            </div>
+
         </div>
 </div>
 
@@ -41,7 +66,6 @@
             <li class="col-2">Статус</li>
             <li class="col-1">Итог(руб.)</li>
             <li class="col-2">Исполнитель</li>
-            <li class="col-1">Действия</li>
         </ul>
 
         {% for work in works %}
@@ -50,13 +74,23 @@
             <li class="col-3" style="text-align: left;">{{ work.name }}</li>
             <li class="col-1">{{ work.standard }}</li>
             <li class="col-1">{{ work.price }}</li>
-            <li class="col-2">{{ work.order_status }}</li>
-            <li class="col-1">{{ work.f_price|floatformat:2 }}</li>
+            {% if work.order_status == 'В работе'%}
+                <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
+            {% else %}
+                <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
+            {% endif %}
+
+            <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
             <li class="col-2">{{ work.completed }}</li>
             <li class="col-1 block_img">
-                <a class="col-3" href=""><img src="{% static 'image/257.png' %}" alt="22"></a>
-                <a class="col-3" href=""><img src="{% static 'image/top.png' %}" alt="22"></a>
-                <a class="col-3" href=""><img src="{% static 'image/exit_close.png' %}" alt="22"></a>
+                {% if work.order_status == 'Согласование' %}
+                    <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="22"></a>
+                {% else %}
+                    <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="22"></a>
+                {% endif %}
+<!--                написать функцию в js для открытия окна работ, подключить-->
+                <a class="col-3" onclick="edit__work_order()" href=""><img src="{% static 'image/top.png' %}" alt="22"></a>
+                <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="22"></a>
             </li>
         </ul>
         <div class="col-1">

@@ -9,6 +9,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import OrdersForm, WorksForm
 from .models import Orders, WorksOrder
+from django.db.models import Sum
 
 
 # Главная страница с нарядами
@@ -37,14 +38,13 @@ def closer_orders(request):
     return render(request, 'service/closed-orders.html', context)
 
 
-# работы под наряд
+# добавление работ под наряд
 @login_required
 def worksorder(request, pk):
     order = get_object_or_404(Orders, id=pk)
     works = WorksOrder.objects.filter(order=order)
     context = {'works': works, 'order': order, 'form': WorksForm()}
     if request.method == "GET":
-        context = {'works': works, 'order': order, 'form': WorksForm()}
         return render(request, 'service/worksorder.html', context)
     else:
         try:
@@ -53,9 +53,9 @@ def worksorder(request, pk):
             new_form.final_price = new_form.standard * new_form.price
             new_form.order = order
             new_form.save()
-            return render(request, 'service/worksorder.html', context)
+            # return render(request, 'service/worksorder.html', context)
+            return redirect(request.META.get('HTTP_REFERER'))
         except ValueError:
-            context = {'works': works, 'order': order, 'form': WorksForm()}
             return render(request, 'service/worksorder.html', context)
 
 
@@ -81,6 +81,39 @@ def logoutuser(request):
         return redirect('loginuser')
 
 
+# удаление работ из наряда
+def delete_work(request, pk):
+    if request.method == "GET":
+        work = get_object_or_404(WorksOrder, id=pk)
+        work.delete()
+        # возврат обратно на страницу
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
+# изменение статуса работы
+def at_work(request, pk):
+    # наряд к которому привязана работа
+    work = WorksOrder.objects.get(id=pk).order
+    if request.method == "GET":
+        if WorksOrder.objects.filter(id=pk, order_status="Согласование"):
+            WorksOrder.objects.filter(id=pk).update(order_status="В работе")
+            # сумма стоимости работ под наряд
+            order_sum = WorksOrder.objects.filter(order=work, order_status='В работе').aggregate(Sum("final_price"))
+            work.final_price = order_sum['final_price__sum']
+            work.save()
+        else:
+            WorksOrder.objects.filter(id=pk).update(order_status="Согласование")
+            # сумма стоимости работ под наряд
+            order_sum = WorksOrder.objects.filter(order=work, order_status='В работе').aggregate(Sum("final_price"))
+            work.final_price = order_sum['final_price__sum']
+            work.save()
+        return redirect(request.META.get('HTTP_REFERER'))
 
+
+# редактирование работы
+def edit_work(request, pk):
+    pass
+#     works = WorksOrder.objects.filter(id=pk)
+#     context = {'works': works, 'form': WorksForm()}
+#     if request.method == "GET":
+#         return render(request, 'service/worksorder.html', context)

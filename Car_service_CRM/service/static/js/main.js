@@ -42,4 +42,11 @@ $(document).ready(function(){
 			$('.add_work').css({'display':'none'});
 		}
 	}
+	
+	
+	
+	function edit__work_order(){
+		$('.edit_work').css({'display':''})		
+	}
+	
 });

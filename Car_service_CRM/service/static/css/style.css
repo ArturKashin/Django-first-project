@@ -73,7 +73,7 @@ li{
     
 }
 .spis_orders, .spis_works{
-	padding: 0px;
+	padding-top: 1px;
 	background: #01f3eb26;
 }
 .spis_orders li{
@@ -120,30 +120,30 @@ li{
     margin: 10px 0px 20px 0px;
 }
 
-#add_order, #add_work{
+#add_order, #add_work, #add_parts{
 	position: absolute;
     z-index: -1;
     opacity: 0;
     display: block;
 }
 
-.add_order{
+.add_order, .add_work, .add_parts{
 	margin: 10px;
 	border: 2px solid;
 	border-radius: 10px;
 }
-.add_order form{
+.add_order form, .add_work form{
 	justify-content: space-between;
 	margin: auto;
 }
-.add_order input{
-	margin: 5px 0px 10px 0px;
+.add_order input, .add_work input{
+	margin: 5px 0px 5px 0px;
 }
-.add_order button{
-	margin: 10px 0px 10px 0px;
+.add_order button, .add_work button{
+	margin: 10px 0px 5px 0px;
 }
-.add_order textarea{
-	margin: 5px 0px 10px 0px;
+.add_order textarea, .add_work textarea{
+	margin: 5px 0px 5px 0px;
 }
 
 .add__order_menu, .add__work_menu{
@@ -152,7 +152,19 @@ li{
 
 li.block_img{
 	padding: 0px 0px 0px 0px;
+	background: white;
 }
 
+.order_info{
+	margin: 10px 0px 10px 0px;
+} 
+.order_info li{
+	display: inline-block;
+	font-size: 18px;
+}
+
+.edit_work{
+	display: none;
+}
 
 

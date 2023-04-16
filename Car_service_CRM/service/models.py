@@ -9,6 +9,7 @@ class Orders(models.Model):
     notes = models.TextField(null=True, blank=True, verbose_name='Комментарии')
     date_start = models.DateTimeField(auto_now_add=True, verbose_name='Дата открытия наряда')
     date_completed = models.DateTimeField(null=True, blank=True, verbose_name='Дата закрытия наряда')
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость наряда')
 
     def __str__(self):
         return f"{self.client} А/М - {self.registration_number}"
@@ -17,9 +18,9 @@ class Orders(models.Model):
 class WorksOrder(models.Model):
     name = models.CharField(max_length=50, verbose_name='Наименование работы')
     standard = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Норма времени н/ч')
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Стоимость н/ч')
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Стоимость ч/руб.')
     order_status = models.CharField(default='Согласование', max_length=20, verbose_name='Статус работы')
-    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая сумма')
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость работы')
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, verbose_name='Выбор з/наряда')
     completed = models.CharField(max_length=30, default='Не определено', verbose_name='Исполнитель')
 

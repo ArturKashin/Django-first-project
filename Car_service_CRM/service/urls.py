@@ -9,6 +9,9 @@ urlpatterns = [
     path('', views.loginuser, name='loginuser'),
     path('logout/', views.logoutuser, name="logoutuser"),
     path('closed-orders/', views.closer_orders, name="closed_orders"),
+    path('worksorder/delete-work/<str:pk>', views.delete_work, name="delete-work"),
+    path('worksorder/at-work/<str:pk>', views.at_work, name='at-work'),
+    path('worksorder/edit-work/<str:pk>', views.edit_work, name='edit-work')
 ]
 
 if settings.DEBUG:

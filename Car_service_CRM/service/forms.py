@@ -26,6 +26,7 @@ class WorksForm(ModelForm):
         model = WorksOrder
         fields = ['name', 'standard', 'price']
 
+
     # фильтр для добавления работ только в открытые наряды
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
