@@ -5,67 +5,84 @@
 <div class="container">
     <div class="row">
 
+
+        {% if order.date_completed == Null and person.jod_title == "Мастер" %}
         <div class="row add__work_menu service__base_menu col-12">
             <ul class="row col-12">
-                {% if user.is_authenticated %}
                 <li class="col-2 add_works"><label for="add_work">Добавить работу</label>
                     <input id="add_work" type="checkbox"></li>
                 <li class="col-2 add_parts"><label for="add_parts">Добавить запчасть</label>
                     <input id="add_parts" type="checkbox"></li>
-                {% endif %}
+                <li class="col-2"><a href="{% url 'close-order' order.id %}">Закрыть з/наряд</a></li>
+                <li class="col-2"><a href="{% url 'delete-order' order.id %}">Удалить з/наряд</a></li>
             </ul>
         </div>
+        {% endif %}
 
+        {% if person.jod_title == "Мастер" %}
         <div class="row col-12 order_info">
-
             <ul class="row col-12">
                 <li class="col-3">{{ order.client }}</li>
                 <li class="col-2">{{ order.vin_number }}</li>
-                <li class="col-2">{{ order.registration_number }}</li>
-                <li class="col-5" style="text-align:right">
-                    {% if order.final_price %}
-                    Итог: {{ order.final_price }}
-                    {% else %}
-                    Итог: 0,00
-                    {% endif %}
+                <li class="col-2" style="text-align:center">{{ order.registration_number }}</li>
+                {% if order.final_price %}
+                <li class="col-5" style="text-align:right; background:#7bf57b">
+                    Итог: {{ order.final_price }} руб.
                 </li>
+                {% else %}
+                <li class="col-5" style="text-align:right">
+                    Итог: {{ order.final_price }} руб.
+                </li>
+                {% endif %}
+
+                {% if order.notes %}
+                <li class="col-12">{{ order.notes }}</li>
+                {% endif %}
 
             </ul>
         </div>
+        {% endif %}
 
-            <div class="row col-6 add_work">
+            <div class="row col-12 add_work">
 
-                <form method="POST" class="row col-9">
+                <form method="POST" class="row col-12">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="col-6">Создать</button>
+                    <ul class="row col-12">
+                        <li class="col-8">{{ form.name.label }}</li>
+                        <li class="col-2">{{ form.standard.label }}</li>
+                        <li class="col-2">{{ form.price.label }}</li>
+                    </ul>
+                    <ul class="row col-12">
+                        <li class="col-8">{{ form.name }}</li>
+                        <li class="col-2">{{ form.standard }}</li>
+                        <li class="col-2">{{ form.price }}</li>
+                    </ul>
+                    <button class="col-4">Создать</button>
                     <button type="reset" class="col-4">Очистить</button>
                 </form>
 
             </div>
-
-            <div class="col-6 edit_work">
-                <form action="POST" class="row col-9">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="col-6">Сохранить</button>
-                    <button type="reset" class="col-4">Очистить</button>
-                </form>
-            </div>
-
-        </div>
-</div>
 
         <h1 class="service_h1 col-12">Работы</h1>
+
+<!--        сообщения error или success-->
+        {% if messages %}
+        <ul class="messages col-12 row">
+            {% for message in messages %}
+                <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
 
         <ul class="row name_fields col-12">
             <li class="col-1">№</li>
             <li class="col-3">Работа</li>
             <li class="col-1">Норм/час</li>
-            <li class="col-1">Стоимость/час(руб.)</li>
-            <li class="col-2">Статус</li>
-            <li class="col-1">Итог(руб.)</li>
             <li class="col-2">Исполнитель</li>
+            <li class="col-2">Статус</li>
+            <li class="col-1">Стоимость/час(руб.)</li>
+            <li class="col-1">Итог(руб.)</li>
         </ul>
 
         {% for work in works %}
@@ -73,29 +90,30 @@
             <li class="col-1">{{ forloop.counter }}</li>
             <li class="col-3" style="text-align: left;">{{ work.name }}</li>
             <li class="col-1">{{ work.standard }}</li>
-            <li class="col-1">{{ work.price }}</li>
-            {% if work.order_status == 'В работе'%}
-                <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
-            {% else %}
+            <li class="col-2">{{ work.executor }}</li>
+
+            {% if work.order_status == 'В работе' and work.executor == '' %}
                 <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
+                {% elif work.order_status == 'Согласование' and work.executor == '' %}
+                <li style="background:#ff0000b5" class="col-2">{{ work.order_status }}</li>
+                {% else %}
+                <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
             {% endif %}
 
-            <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
-            <li class="col-2">{{ work.completed }}</li>
-            <li class="col-1 block_img">
-                {% if work.order_status == 'Согласование' %}
-                    <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="22"></a>
-                {% else %}
-                    <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="22"></a>
-                {% endif %}
-<!--                написать функцию в js для открытия окна работ, подключить-->
-                <a class="col-3" onclick="edit__work_order()" href=""><img src="{% static 'image/top.png' %}" alt="22"></a>
-                <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="22"></a>
-            </li>
-        </ul>
-        <div class="col-1">
+                <li class="col-1">{{ work.price }}</li>
+                <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
 
-        </div>
+                <li class="col-1 block_img">
+                    {% if work.order_status == 'Согласование' and work.order_status != 'Выполнено' %}
+                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="22"></a>
+                    {% elif work.order_status == 'В работе' and work.order_status != 'Выполнено' %}
+                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="22"></a>
+                    {% endif %}
+    <!--                написать функцию в js для открытия окна работ, подключить-->
+                    <a class="col-3" href="{% url 'edit-work' work.id %}"><img src="{% static 'image/top.png' %}" alt="22"></a>
+                    <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="22"></a>
+                </li>
+        </ul>
         {% endfor %}
 
     </div>

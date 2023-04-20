@@ -3,6 +3,20 @@
 
 <div class="container">
     <div class="row">
+
+        <div class="row add__order_menu service__base_menu col-12">
+            <ul class="row col-12">
+                {% if user.is_authenticated %}
+                <li class="col-12 search_order">
+                    <form class="row col-12" action="{% url 'closed_orders' %}">
+                        <input class="col-7" type="search" placeholder="Поиск" name="search">
+                        <button class="col-5" type="submit">Поиск</button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
         <h1 class="service_h1 col-12">Закрытые наряды</h1>
         <ul class="row name_fields col-12">
             <li class="col-1">№ З/Н</li>
@@ -14,7 +28,7 @@
         </ul>
         {% for order in orders %}
 
-        <a href="{% url 'worksorder' order.id %}" class="row col-12 order_box">
+        <a href="{% url 'closed-works' order.id %}" class="row col-12 order_box">
         <ul class="row spis_orders col-12">
             <li class="col-1">{{ order.id }}</li>
             <li class="col-5" style="text-align: left;">{{ order.client }}</li>

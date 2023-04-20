@@ -1,0 +1,37 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <form action="{% url 'register_user' %}" method="post" class="col-6 row">
+            {% csrf_token %}
+
+            <label for="{{ form_user.username.id_for_label }}" class="col-5">Имя пользователя</label>
+            <p class="col-7">{{ form_user.username }}</p>
+
+            <label for="{{ form_user.first_name.id_for_label }}" class="col-5">Полное имя сотрудника</label>
+            <p class="col-7">{{ form_user.first_name }}</p>
+
+            <label for="{{ form_user.password1.id_for_label }}" class="col-5">Пароль</label>
+            <p class="col-7">{{ form_user.password1 }}</p>
+
+            <label for="{{ form_user.password2.id_for_label }}" class="col-5">Повторите пароль</label>
+            <p class="col-7">{{ form_user.password2 }}</p>
+
+<!--            <label for="{{ form_person.jod_title.id_for_label }}" class="col-5">Должность</label>-->
+<!--            <p class="col-7">{{ form_person.jod_title }}</p>-->
+
+            <label for="jod_title" class="col-5">Должность</label>
+            <select name="jod_title" id="jod_title" class="col-7">
+                <option value="Механик">Механик</option>
+                <option value="Мастер">Мастер</option>
+                <option value="Склад">Склад</option>
+            </select>
+
+            <button type="submit" class="col-6">Создать</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -15,8 +15,12 @@
             <ul class="row col-12 footer_menu">
 
                 {% if user.is_authenticated %}
-                <li class="col-1">{{ user.username }}</li>
-                <li class="col-2"><a href="">Зарегистрировать</a></li>
+                <li class="col-3">{{ user.first_name }}</li>
+                    {% if person.jod_title == 'Мастер' %}
+                    <li class="col-2"><a href="{% url 'register_user' %}">Зарегистрировать</a></li>
+                    {% elif person.jod_title == 'Механик' %}
+                    <li class="col-2">Выработка: {{ person.time }} н/ч</li>
+                    {% endif %}
                 <li class="col-1">
                     <form action="{% url 'logoutuser' %}" method="post">
                         {% csrf_token %}
@@ -33,8 +37,13 @@
          <ul class="row col-12">
 
              {% if user.is_authenticated %}
-             <li class="col-2"><a href="{% url 'index' %}">Открытые з/наряды</a></li>
-             <li class="col-2"><a href="{% url 'closed_orders' %}">Закрытые з/наряд</a></li>
+                 {% if person.jod_title == 'Механик' %}
+                    <li class="col-2"><a href="{% url 'order-for-mechanical' %}">Открытые з/наряды</a></li>
+                 {% elif person.jod_title == 'Мастер' %}
+                     <li class="col-2"><a href="{% url 'index' %}">Открытые з/наряды</a></li>
+                     <li class="col-2"><a href="">Склад</a></li>
+                     <li class="col-2"><a href="{% url 'closed_orders' %}">Закрытые з/наряд</a></li>
+                 {% endif %}
              {% endif %}
 
          </ul>

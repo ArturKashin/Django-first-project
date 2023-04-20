@@ -1,0 +1,65 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <h1 class="service_h1 col-12">Работы</h1>
+
+        {% if person.jod_title == "Мастер" %}
+        <div class="row col-12 order_info">
+            <ul class="row col-12">
+                <li class="col-3">{{ order.client }}</li>
+                <li class="col-2">{{ order.vin_number }}</li>
+                <li class="col-2" style="text-align:center">{{ order.registration_number }}</li>
+                {% if order.final_price %}
+                <li class="col-5" style="text-align:right; background:#7bf57b">
+                    Итог: {{ order.final_price }} руб.
+                </li>
+                {% else %}
+                <li class="col-5" style="text-align:right">
+                    Итог: {{ order.final_price }} руб.
+                </li>
+                {% endif %}
+
+                {% if order.notes %}
+                <li class="col-12">{{ order.notes }}</li>
+                {% endif %}
+
+            </ul>
+        </div>
+        {% endif %}
+
+        <ul class="row name_fields col-12">
+            <li class="col-1">№</li>
+            <li class="col-3">Работа</li>
+            <li class="col-2">Исполнитель</li>
+            <li class="col-3">Статус</li>
+            <li class="col-1">Норм/час</li>
+            <li class="col-1">Стоимость/час(руб.)</li>
+            <li class="col-1">Итог(руб.)</li>
+        </ul>
+
+        {% for work in works %}
+        <ul class="row spis_works col-12">
+            <li class="col-1">{{ forloop.counter }}</li>
+            <li class="col-3" style="text-align: left;">{{ work.name }}</li>
+            <li class="col-2">{{ work.executor }}</li>
+            {% if work.order_status == 'В работе' and work.executor == '' %}
+                <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
+                {% elif work.order_status == 'Согласование' and work.executor == '' %}
+                <li style="background:#ff0000b5" class="col-2">{{ work.order_status }}</li>
+                {% else %}
+                <li style="background:#7bf57b" class="col-3">{{ work.order_status }}</li>
+            {% endif %}
+            <li class="col-1">{{ work.standard }}</li>
+            <li class="col-1">{{ work.price }}</li>
+            <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
+        </ul>
+        {% endfor %}
+
+    </div>
+</div>
+
+
+{% endblock %}

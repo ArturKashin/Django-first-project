@@ -53,7 +53,7 @@ li{
 	padding: 10px;
 	background: white;
 	margin: 0px 5px 0px 5px;
-	border: 1px solid #154bff;
+	border: 2px solid #154bff;
     border-radius: 4px;
 }
 .service__base_menu li:hover{
@@ -73,7 +73,7 @@ li{
     
 }
 .spis_orders, .spis_works{
-	padding-top: 1px;
+	margin-top: -1px;
 	background: #01f3eb26;
 }
 .spis_orders li{
@@ -100,7 +100,6 @@ li{
 }
 
 .form_user{
-
 	justify-content: center;
 }
 .form_user input{
@@ -128,19 +127,24 @@ li{
 }
 
 .add_order, .add_work, .add_parts{
-	margin: 10px;
-	border: 2px solid;
+	margin: 10px 0px 10px 0px;
+	border: 2px solid #154bff;
 	border-radius: 10px;
 }
 .add_order form, .add_work form{
 	justify-content: space-between;
 	margin: auto;
+	padding: 10px;
 }
 .add_order input, .add_work input{
 	margin: 5px 0px 5px 0px;
+	width: 100%;
+	outline: none;
 }
 .add_order button, .add_work button{
 	margin: 10px 0px 5px 0px;
+	border: 2px solid #154bff;
+	border-radius: 5px;
 }
 .add_order textarea, .add_work textarea{
 	margin: 5px 0px 5px 0px;
@@ -149,10 +153,19 @@ li{
 .add__order_menu, .add__work_menu{
 	background: white;
 }
+.add_order button:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+.add_work button:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
 
 li.block_img{
 	padding: 0px 0px 0px 0px;
 	background: white;
+	text-align: right;
 }
 
 .order_info{
@@ -160,11 +173,57 @@ li.block_img{
 } 
 .order_info li{
 	display: inline-block;
-	font-size: 18px;
+	font-size: 14px;
+	border: 1px solid;
+    padding: 5px 10px 5px 10px;
+    margin-top: -1px;
 }
 
-.edit_work{
-	display: none;
+.search_order input{
+	border: none;
+	padding: 10px 10px 10px 10px;
+	margin: 0px;
+	outline: none;
+}
+li.search_order{
+	padding: 0px;
+}
+.search_order button{
+	background: #01f3eb26;
+	border: none;
+	border-left: 2px solid #154bff;
+}
+.search_order button:hover{
+	background: #3b69ff;
+	color: white;
 }
 
+.executor_completed:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+.executor_completed a{
+	display: block;	
+}
+li.executor_completed{
+	background: white;
+	border: 2px solid #154bff;
+	border-radius: 5px;
+}
 
+.messages{
+	justify-content: center;
+}
+.messages li{
+	padding: 20px;
+	border-radius: 5px;
+}
+.messages p{
+	margin: auto;
+}
+li.messages_error{
+	background: #ff000094;
+}
+li.messages_success{
+	background: #00ff007d;
+}
