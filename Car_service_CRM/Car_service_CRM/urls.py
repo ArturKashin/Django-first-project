@@ -17,11 +17,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework import routers
+from service import views
+
+# router = routers.DefaultRouter()
+# router.register(r'order', views.OrderViewSet)
+# router.register(r'works-order', views.WorksOrderViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
     path('service/', include('service.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    # path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:

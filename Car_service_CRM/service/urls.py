@@ -1,9 +1,17 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework import routers
+
+
+routers = routers.DefaultRouter()
+routers.register(r'order', views.OrderViewSet)
+routers.register(r'works-order', views.WorksOrderViewSet)
 
 urlpatterns = [
+    path('api/', include(routers.urls)),
+
     path('orders/', views.index, name='index'),
     path('worksorder/<str:pk>/', views.worksorder, name='worksorder'),
     path('close-order/<str:pk>/', views.close_order, name='close-order'),

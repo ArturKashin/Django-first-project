@@ -7,6 +7,20 @@ from django.db.models import Q
 from users.models import Person
 from django.contrib import messages
 from datetime import datetime
+from rest_framework import viewsets, permissions
+from .serializers import OrderSerializer, WorksOrderSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Orders.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class WorksOrderViewSet(viewsets.ModelViewSet):
+    queryset = WorksOrder.objects.all()
+    serializer_class = WorksOrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # Главная страница с нарядами
@@ -16,7 +30,7 @@ def index(request):
         search_query = request.GET.get('search', '')
         person = Person.objects.get(user=request.user)
         if search_query:
-            orders = Orders.objects.filter(Q(date_completed__isnull=True),
+            orders = Orders.objects.distinct().filter(Q(date_completed__isnull=True),
                                            Q(vin_number__icontains=search_query) |
                                            Q(registration_number__icontains=search_query))
         else:

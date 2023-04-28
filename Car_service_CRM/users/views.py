@@ -4,6 +4,15 @@ from django.contrib.auth import login, logout, authenticate
 # форма авторизации пользователя
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Person
+from .serializers import UserSerializer
+from rest_framework import viewsets, permissions
+from django.contrib.auth.models import User
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # Create your views here.
