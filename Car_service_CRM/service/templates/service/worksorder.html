@@ -43,7 +43,8 @@
         </div>
         {% endif %}
 
-            <div class="row col-12 add_work">
+<!--            форма добавления работ-->
+        <div class="row col-12 add_work" style="display:{{ edit_style }}">
 
                 <form method="POST" class="row col-12">
                     {% csrf_token %}
@@ -62,6 +63,7 @@
                 </form>
 
             </div>
+
 
         <h1 class="service_h1 col-12">Работы</h1>
 
@@ -90,7 +92,7 @@
             <li class="col-1">{{ forloop.counter }}</li>
             <li class="col-3" style="text-align: left;">{{ work.name }}</li>
             <li class="col-1">{{ work.standard }}</li>
-            <li class="col-2">{{ work.executor }}</li>
+            <li class="col-2">{{ work.executor|title }}</li>
 
             {% if work.order_status == 'В работе' and work.executor == '' %}
                 <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
@@ -105,13 +107,13 @@
 
                 <li class="col-1 block_img">
                     {% if work.order_status == 'Согласование' and work.order_status != 'Выполнено' %}
-                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="22"></a>
+                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="Статус"></a>
                     {% elif work.order_status == 'В работе' and work.order_status != 'Выполнено' %}
-                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="22"></a>
+                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="Статус"></a>
                     {% endif %}
     <!--                написать функцию в js для открытия окна работ, подключить-->
-                    <a class="col-3" href="{% url 'edit-work' work.id %}"><img src="{% static 'image/top.png' %}" alt="22"></a>
-                    <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="22"></a>
+                    <a class="col-3" href="{% url 'edit-work' work.id %}"><img src="{% static 'image/top.png' %}" alt="Изменить"></a>
+                    <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="Удалить"></a>
                 </li>
         </ul>
         {% endfor %}

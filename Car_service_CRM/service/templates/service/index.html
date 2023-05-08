@@ -19,7 +19,8 @@
             </ul>
         </div>
 
-        <div class="row col-12 add_order">
+
+        <div class="row col-12 add_order" style="display:{{ order_style }}">
                 <form method="POST" class="row col-12">
                     {% csrf_token %}
                     <ul class="row col-12">

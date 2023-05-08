@@ -41,7 +41,7 @@
                     <li class="col-2"><a href="{% url 'order-for-mechanical' %}">Открытые з/наряды</a></li>
                  {% elif person.jod_title == 'Мастер' %}
                      <li class="col-2"><a href="{% url 'index' %}">Открытые з/наряды</a></li>
-                     <li class="col-2"><a href="">Склад</a></li>
+                     <li class="col-2"><a href="{% url 'depositary' %}">Склад</a></li>
                      <li class="col-2"><a href="{% url 'closed_orders' %}">Закрытые з/наряд</a></li>
                  {% endif %}
              {% endif %}

@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
-	add__order_display();
-	add__work_order();
+//	add__order_display();
+//	add__work_order();
 
 
 //окно добавление наряда

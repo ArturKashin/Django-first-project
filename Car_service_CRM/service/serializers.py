@@ -2,7 +2,7 @@ from .models import Orders, WorksOrder
 from rest_framework import serializers
 
 
-class OrderSerializer(serializers.HyperlinkedModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
         fields = ['id',
@@ -15,7 +15,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
                   'final_price']
 
 
-class WorksOrderSerializer(serializers.HyperlinkedModelSerializer):
+class WorksOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorksOrder
         fields = ['id',

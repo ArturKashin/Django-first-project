@@ -29,3 +29,7 @@ class WorksOrder(models.Model):
     def __str__(self):
         return f"{self.order} -->> {self.name}"
 
+    def sum_price(self):
+        final_prices = self.price * self.standard
+        self.final_price = final_prices
+        self.save()

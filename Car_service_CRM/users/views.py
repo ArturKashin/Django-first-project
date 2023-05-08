@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import UserForm
 from django.contrib.auth import login, logout, authenticate
@@ -12,7 +13,7 @@ from django.contrib.auth.models import User
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
 
 # Create your views here.
@@ -56,6 +57,7 @@ def loginuser(request):
 
 
 # выход из акк
+@login_required(login_url='loginuser')
 def logoutuser(request):
     if request.method == "POST":
         logout(request)
