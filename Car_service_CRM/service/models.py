@@ -13,7 +13,7 @@ class Orders(models.Model):
     final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость наряда')
 
     def __str__(self):
-        return f"{self.client} А/М - {self.registration_number}"
+        return f"заказ-наряд №{self.id}, А/М № '{self.registration_number}', {self.client}"
 
 
 class WorksOrder(models.Model):

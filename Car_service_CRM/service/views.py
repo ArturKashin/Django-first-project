@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import OrdersForm, WorksForm
 from .models import Orders, WorksOrder
+from depositary.models import Depositary
 from django.db.models import Q, Sum
 from users.models import Person
 from django.contrib import messages
@@ -38,7 +39,7 @@ def index(request):
         else:
             orders = Orders.objects.filter(date_completed__isnull=True)
 
-        context = {'orders': orders, 'person': person, 'form': OrdersForm(),'order_style': 'none'}
+        context = {'orders': orders, 'person': person, 'form': OrdersForm(), 'order_style': 'none'}
         return render(request, 'service/index.html', context)
     if request.method == "POST":
         try:
@@ -112,7 +113,17 @@ def worksorder(request, pk):
     order = Orders.objects.get(id=pk)
     works = WorksOrder.objects.filter(order=order)
     person = Person.objects.get(user=request.user)
-    context = {'works': works, 'order': order, 'person': person, 'form': WorksForm(), 'edit_style': 'none'}
+    parts = Depositary.objects.filter(order=None)
+
+    detail = Depositary.objects.filter(order=order)
+    sum_detail = detail.aggregate(Sum('output_cost'))
+    sum_detail = sum_detail['output_cost__sum']
+    sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
+
+    context = {'works': works, 'order': order, 'person': person, 'form': WorksForm(), 'edit_style': 'none',
+               'parts_style': 'none', 'parts__style_sp': 'none', 'parts': parts,
+               'detail': detail,
+               'sum_detail': sum_detail, 'sum_works_detail': sum_works_detail}
     if request.method == "GET":
         return render(request, 'service/worksorder.html', context)
     else:
@@ -188,7 +199,14 @@ def edit_work(request, pk):
 
     works = WorksOrder.objects.filter(order=work.order)
     order = Orders.objects.get(id=work.order.id)
-    context = {'form': form, 'works': works, 'person': person, 'order': order, 'edit_style': ''}
+
+    detail = Depositary.objects.filter(order=order)
+    sum_detail = detail.aggregate(Sum('output_cost'))
+    sum_detail = sum_detail['output_cost__sum']
+    sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
+
+    context = {'form': form, 'works': works, 'person': person, 'order': order, 'edit_style': '',
+               'sum_detail': sum_detail, 'sum_works_detail': sum_works_detail}
 
     if request.method == "POST":
         form = WorksForm(request.POST, instance=work)
@@ -202,7 +220,7 @@ def edit_work(request, pk):
             order__final_price = works.aggregate(Sum('final_price'))
             order.final_price = order__final_price['final_price__sum']
             order.save()
-            return redirect(f'/service/worksorder/{order.id}/')
+            return redirect(f'/worksorder/{order.id}/')
 
     return render(request, 'service/worksorder.html', context)
 
@@ -218,7 +236,7 @@ def close_order(request, pk):
         if work.order_status != 'Выполнено':
             context = {'order': order, 'works': works, 'person': person}
             messages.error(request, 'Присутствуют не выполненные работы, удалите либо выполните работы!')
-            return redirect(f'/service/worksorder/{order.id}/')
+            return redirect(f'/worksorder/{order.id}/')
     order.date_completed = datetime.now()
     order.save()
     messages.success(request, "Наряд успешно закрыт")

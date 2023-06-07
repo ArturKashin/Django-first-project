@@ -14,7 +14,7 @@ router.register(r'user', UserViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
 
-    path('orders/', views.index, name='index'),
+    path('', views.index, name='index'),
     path('worksorder/<str:pk>/', views.worksorder, name='worksorder'),
     path('close-order/<str:pk>/', views.close_order, name='close-order'),
 

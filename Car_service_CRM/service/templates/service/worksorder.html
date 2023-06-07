@@ -19,25 +19,72 @@
         </div>
         {% endif %}
 
+
+        <!--        добавление запчастей-->
+        <div class="row add_part add__order_menu service__base_menu col-12" style="display:{{ parts_style }}">
+            <ul class="row col-12" style="justify-content: space-between">
+                {% if user.is_authenticated %}
+                <li class="col-12 search_order">
+                    <form class="row col-12" action="{% url 'depositary' %}">
+                        <input class="col-7" type="search" placeholder="Поиск на складе" name="search">
+                        <button class="col-5" type="submit">Поиск</button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="parts__style_sp row col-12" style="display:{{ parts__style_sp }}">
+            {% for part in parts %}
+                <ul class="row spis_parts col-12">
+                    <li class="col-2">{{ part.part_number }}</li>
+                    <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+                    <li class="col-1">{{ part.part_location }}</li>
+                    <li class="col-1">{{ part.input_cost }}</li>
+                    <li class="col-1">{{ part.markup_cost }}</li>
+                    <li class="col-1">{{ part.output_cost }}</li>
+                    <li class="col-1">{{ part.quantity }}</li>
+                    <li class="col-1" style="padding:0px; background:white"><a href="{% url 'add-detail' order.id part.id %}"><img src="{% static 'image/257.png' %}" alt="Статус"></a></li>
+                </ul>
+            {% endfor %}
+        </div>
+
+
+
+<!--        информация о наряде-->
         {% if person.jod_title == "Мастер" %}
         <div class="row col-12 order_info">
             <ul class="row col-12">
-                <li class="col-3">{{ order.client }}</li>
+                <li class="col-4">{{ order.client }}</li>
                 <li class="col-2">{{ order.vin_number }}</li>
                 <li class="col-2" style="text-align:center">{{ order.registration_number }}</li>
+<!--                стоимость работ-->
                 {% if order.final_price %}
-                <li class="col-5" style="text-align:right; background:#7bf57b">
-                    Итог: {{ order.final_price }} руб.
+                <li class="col-2" style="text-align:right; background:#7bf57b">
+                    Работы: {{ order.final_price }} руб.
                 </li>
                 {% else %}
-                <li class="col-5" style="text-align:right">
-                    Итог: {{ order.final_price }} руб.
+                <li class="col-2" style="text-align:right; background:#7bf57b">
+                    Работы: {{ order.final_price }} руб.
                 </li>
                 {% endif %}
 
-                {% if order.notes %}
-                <li class="col-12">{{ order.notes }}</li>
+<!--                стоимость деталей-->
+                {% if sum_detail %}
+                <li class="col-2" style="text-align:right; background:#7bf57b">
+                    Детали: {{ sum_detail }} руб.
+                </li>
+                {% else %}
+                <li class="col-2" style="text-align:right; background:#7bf57b">
+                    Детали: 0,00 руб.
+                </li>
                 {% endif %}
+
+
+                <li class="col-8">Примечание: {{ order.notes }}</li>
+                <li class="col-4" style="text-align:right; background:#7bf57b">
+                    Итог: {{ sum_works_detail }} руб.
+                </li>
 
             </ul>
         </div>
@@ -45,7 +92,6 @@
 
 <!--            форма добавления работ-->
         <div class="row col-12 add_work" style="display:{{ edit_style }}">
-
                 <form method="POST" class="row col-12">
                     {% csrf_token %}
                     <ul class="row col-12">
@@ -58,11 +104,10 @@
                         <li class="col-2">{{ form.standard }}</li>
                         <li class="col-2">{{ form.price }}</li>
                     </ul>
-                    <button class="col-4">Создать</button>
+                    <button class="col-4">Сохранить</button>
                     <button type="reset" class="col-4">Очистить</button>
                 </form>
-
-            </div>
+        </div>
 
 
         <h1 class="service_h1 col-12">Работы</h1>
@@ -77,6 +122,8 @@
         {% endif %}
 
 
+<!--        список работ-->
+        {% if works %}
         <ul class="row name_fields col-12">
             <li class="col-1">№</li>
             <li class="col-3">Работа</li>
@@ -86,7 +133,9 @@
             <li class="col-1">Стоимость/час(руб.)</li>
             <li class="col-1">Итог(руб.)</li>
         </ul>
+        {% endif %}
 
+<!--        список работ-->
         {% for work in works %}
         <ul class="row spis_works col-12">
             <li class="col-1">{{ forloop.counter }}</li>
@@ -105,7 +154,7 @@
                 <li class="col-1">{{ work.price }}</li>
                 <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
 
-                <li class="col-1 block_img">
+                <li class="col-1 row block_img">
                     {% if work.order_status == 'Согласование' and work.order_status != 'Выполнено' %}
                         <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="Статус"></a>
                     {% elif work.order_status == 'В работе' and work.order_status != 'Выполнено' %}
@@ -117,6 +166,36 @@
                 </li>
         </ul>
         {% endfor %}
+
+
+        {% if detail %}
+        <h1 class="service_h1 col-12">Запчасти</h1>
+
+<!--        список запчастей-->
+        <ul class="row name_fields col-12">
+            <li class="col-2">Артикул</li>
+            <li class="col-4">Название детали</li>
+            <li class="col-1">Расположение</li>
+            <li class="col-1">Вход руб.</li>
+            <li class="col-1">Наценка %</li>
+            <li class="col-1">Выход руб.</li>
+            <li class="col-1">Количество, шт.</li>
+        </ul>
+
+<!--        список запчастей-->
+        {% for d in detail %}
+        <ul class="row spis_works col-12">
+            <li class="col-2">{{ d.part_number }}</li>
+            <li class="col-4" style="text-align: left;">{{ d.part_name|capfirst }}</li>
+            <li class="col-1">{{ d.part_location }}</li>
+            <li class="col-1">{{ d.input_cost }}</li>
+            <li class="col-1">{{ d.markup_cost }}</li>
+            <li class="col-1">{{ d.output_cost }}</li>
+            <li class="col-1">{{ d.quantity }}</li>
+            <li class="col-1 row block_img"><a href="{% url 'remove-detail-from_order' d.id %}"><img src="{% static 'image/exit_close.png' %}" alt="Удалить"></a></li>
+        </ul>
+        {% endfor %}
+        {% endif %}
 
     </div>
 </div>

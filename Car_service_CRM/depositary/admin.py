@@ -1,3 +1,4 @@
 from django.contrib import admin
+from depositary.models import Depositary
 
-# Register your models here.
+admin.site.register(Depositary)

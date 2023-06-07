@@ -44,5 +44,21 @@ $(document).ready(function(){
 	}
 	
 	
+//	окно добавления запчастей
+	$('#add_parts').click(function(){
+		if($('#add_parts').is(':checked')){
+			$('.add_part').css({'display':''});
+			$('.parts__style_sp').css({'display':''});
+			$('.add_parts').css({'color': 'red', 'font-weight': '600'});
+		}else{
+			$('.add_part').css({'display':'none'});
+			$('.parts__style_sp').css({'display':'none'});
+			$('.add_parts').css({'color': 'black', 'font-weight': '400'});
+		}
+	})
 	
+	
+
+
+
 });

@@ -48,6 +48,7 @@ li{
 .service__base_menu ul{
 	padding: 10px 0px 10px 0px;
 	text-align: center;
+	margin-bottom: 0px;
 }
 .service__base_menu li{
 	padding: 10px;
@@ -72,9 +73,15 @@ li{
     margin: 10px 10px;
     
 }
-.spis_orders, .spis_works{
+.spis_orders, .spis_works, .spis_parts{
 	margin-top: -1px;
 	background: #01f3eb26;
+}
+.spis_parts li{
+	display: inline-block;
+	border: 1px solid;
+	padding: 10px 0px 10px 5px;
+	text-align: center;
 }
 .spis_orders li{
 	display: inline-block;
@@ -98,6 +105,9 @@ li{
 .spis_orders:hover{
 	text-decoration: underline 1.5px;
 }
+.spis_parts:hover{
+	text-decoration: underline 1.5px;
+}
 
 .form_user{
 	justify-content: center;
@@ -119,7 +129,7 @@ li{
     margin: 10px 0px 20px 0px;
 }
 
-#add_order, #add_work, #add_parts{
+#add_order, #add_work, #add_parts, #add_detail{
 	position: absolute;
     z-index: -1;
     opacity: 0;
@@ -161,11 +171,14 @@ li{
 	background: #e7eaff;
 	text-decoration: underline 1.5px;
 }
-
+.add_work select{
+	width: 100%;
+	font-size: 18px;
+	letter-spacing: 1px;
+}
 li.block_img{
 	padding: 0px 0px 0px 0px;
 	background: white;
-	text-align: right;
 }
 
 .order_info{
@@ -225,5 +238,34 @@ li.messages_error{
 	background: #ff000094;
 }
 li.messages_success{
-	background: #00ff007d;
+	background: #00ff007d;	
 }
+
+table {
+	table-layout: fixed;
+	width: 100%;
+	border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  font-size: 13px;
+}
+.detail_tabel th{
+ 	text-align: left;
+ 	border: 1.5px solid;
+ 	margin-top: 20px;
+}
+
+.detail_tabel td{
+ 	text-align: left;
+ 	border: 1.5px solid;
+}
+.parts__style_sp{
+	margin-top: 10px;
+	margin-bottom: 20px;	
+}
+
+
+
+
+

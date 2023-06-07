@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 from .models import Orders, WorksOrder
-from django import forms
 
 
 # форма добавления наряда

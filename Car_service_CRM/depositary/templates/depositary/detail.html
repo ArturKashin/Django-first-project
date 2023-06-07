@@ -1,0 +1,104 @@
+{% extends 'service/base.html' %}
+{% block content %}
+{% load static %}
+
+<!--меню управления-->
+ {% if person.jod_title == "Мастер" %}
+        <div class="row add__work_menu service__base_menu col-12">
+            <ul class="row col-12">
+                <li class="col-2 add_works"><label for="add_work"><a style="{{ btn_style }}" href="{% url 'edit-detail' detail.id %}">Изменить</a></label>
+                    <input id="add_work" type="checkbox"></li>
+                <li class="col-2 add_detail"><label for="add_detail"><a style="{{ btn1_style }}" href="{% url 'owner-of-detail' detail.id %}">К з/наряду</a></label>
+                    <input id="add_detail" type="checkbox"></li>
+                <li class="col-2"><a href="{% url 'delete-detail' detail.id %}">Списать</a></li>
+            </ul>
+        </div>
+{% endif %}
+
+<!--форма редактирования детали-->
+<div class="row col-12 add_work" style="display:{{ parts_style }}">
+    <form method="POST" action="{% url 'edit-detail' detail.id %}" class="row col-12">
+                    {% csrf_token %}
+                    <ul class="row col-12">
+                        <li class="col-2">Артикул</li>
+                        <li class="col-6">Название детали</li>
+                        <li class="col-1">Расположение</li>
+                        <li class="col-1">Вход руб.</li>
+                        <li class="col-1">Наценка %</li>
+                        <li class="col-1">Количество, шт.</li>
+                    </ul>
+                    <ul class="row col-12">
+                        <li class="col-2">{{ form.part_number }}</li>
+                        <li class="col-6">{{ form.part_name }}</li>
+                        <li class="col-1">{{ form.part_location }}</li>
+                        <li class="col-1">{{ form.input_cost }}</li>
+                        <li class="col-1">{{ form.markup_cost }}</li>
+                        <li class="col-1">{{ form.quantity }}</li>
+                    </ul>
+                    <button class="col-4">Сохранить</button>
+                    <button type="reset" class="col-4">Очистить</button>
+                </form>
+</div>
+
+
+<!--форма прикрепления к з/наряду-->
+<div class="row col-12 add_work" style="display:{{ owner__parts_style }}">
+    <form method="POST" action="{% url 'owner-of-detail' detail.id %}" class="row col-12">
+        {% csrf_token %}
+        <ul class="row col-12">
+            <li class="col-6">{{ form_owner.order }}</li>
+        </ul>
+        <button class="col-4">Зарезервировать</button>
+    </form>
+</div>
+
+<!--        сообщения error или success-->
+{% if messages %}
+<ul class="messages col-12 row">
+    {% for message in messages %}
+    <li class="messages_{{ message.tags }} row col-6"><a href=""><p>{{ message }}</p></a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<!--таблица детали-->
+<table class="col-12 row">
+    <tbody class="col-12 row">
+    <tr class="col-12 row detail_tabel">
+        <th class="col-1">Артикул детали</th>
+        <th class="col-3">Название детали</th>
+        <th class="col-1">Расположение детали</th>
+        <th class="col-1">Входная стоимость</th>
+        <th class="col-1">Выходная стоимость</th>
+        <th class="col-1">Наценка %</th>
+        <th class="col-1">Количество, шт.</th>
+        <th class="col-1">Дата открытия</th>
+        <th class="col-1">Дата закрытия</th>
+        <th class="col-1">З/наряд</th>
+    </tr>
+
+    <tr class="col-12 row detail_tabel">
+        <td class="col-1">{{ detail.part_number }}</td>
+        <td class="col-3">{{ detail.part_name|capfirst }}</td>
+        <td class="col-1">{{ detail.part_location }}</td>
+        <td class="col-1">{{ detail.input_cost }}</td>
+        <td class="col-1">{{ detail.output_cost }}</td>
+        <td class="col-1">{{ detail.markup_cost }}</td>
+        <td class="col-1">{{ detail.quantity }}</td>
+        <td class="col-1">{{ detail.date_opening }}</td>
+        {% if detail.date_closing == None %}
+            <td class="col-1"></td>
+        {% else %}
+            <td class="col-1">{{ detail.date_closing }}</td>
+        {% endif %}
+
+        {% if detail.order %}
+            <td class="col-1">{{ detail.order }}</td>
+        {% else %}
+            <td class="col-1"></td>
+        {% endif %}
+    </tr>
+    </tbody>
+</table>
+
+{% endblock %}

@@ -2,6 +2,87 @@
 {% block content %}
 {% load static %}
 
-<h3>Склад</h3>
+
+<!--        поиск и добавление деталей на склад-->
+<div class="row add__order_menu service__base_menu col-12">
+<ul class="row col-12" style="justify-content: space-between">
+                {% if user.is_authenticated %}
+                <li class="col-2 add_ord"><label for="add_order">Добавить на склад</label><input id="add_order" type="checkbox"></li>
+                <li class="col-9 search_order">
+                    <form class="row col-12" action="{% url 'depositary' %}">
+                        <input class="col-7" type="search" placeholder="Поиск на складе" name="search">
+                        <button class="col-5" type="submit">Поиск</button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+</div>
+
+<!--        форма   -->
+<div class="row col-12 add_order" style="display:{{ parts_style }}">
+                <form method="POST" action="{% url 'add-part' %}" class="row col-12">
+                    {% csrf_token %}
+                    <ul class="row col-12">
+                        <li class="col-2">Артикул</li>
+                        <li class="col-6">Название детали</li>
+                        <li class="col-1">Расположение</li>
+                        <li class="col-1">Вход руб.</li>
+                        <li class="col-1">Наценка %</li>
+                        <li class="col-1">Количество, шт.</li>
+                    </ul>
+                    <ul class="row col-12">
+                        <li class="col-2">{{ form.part_number }}</li>
+                        <li class="col-6">{{ form.part_name }}</li>
+                        <li class="col-1">{{ form.part_location }}</li>
+                        <li class="col-1">{{ form.input_cost }}</li>
+                        <li class="col-1">{{ form.markup_cost }}</li>
+                        <li class="col-1">{{ form.quantity }}</li>
+                    </ul>
+                    <button class="col-4">Сохранить</button>
+                    <button type="reset" class="col-4">Очистить</button>
+                </form>
+        </div>
+
+<!--        сообщения error или success-->
+{% if messages %}
+<ul class="messages col-12 row">
+                    {% for message in messages %}
+                        <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
+                    {% endfor %}
+                </ul>
+{% endif %}
+
+
+<h1 class="service_h1 col-12">Детали</h1>
+<ul class="row name_fields col-12">
+            <li class="col-2">Артикул</li>
+            <li class="col-5">Название детали</li>
+            <li class="col-1">Расположение</li>
+            <li class="col-1">Вход руб.</li>
+            <li class="col-1">Наценка %</li>
+            <li class="col-1">Выход руб.</li>
+            <li class="col-1">Количество, шт.</li>
+        </ul>
+
+<!--список деталей-->
+{% for part in parts %}
+    {% if part.order != Null %}
+    <a href="{% url 'detail' part.id %}" class="row col-12 order_box" style="background: #7bf57b">
+    {% else %}
+    <a href="{% url 'detail' part.id %}" class="row col-12 order_box">
+        {% endif %}
+            <ul class="row spis_parts col-12">
+                <li class="col-2">{{ part.part_number }}</li>
+                <li class="col-5" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+                <li class="col-1">{{ part.part_location }}</li>
+                <li class="col-1">{{ part.input_cost }}</li>
+                <li class="col-1">{{ part.markup_cost }}</li>
+                <li class="col-1">{{ part.output_cost }}</li>
+                <li class="col-1">{{ part.quantity }}</li>
+            </ul>
+        </a>
+
+{% endfor %}
+
 
 {% endblock %}
