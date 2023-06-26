@@ -1,0 +1,270 @@
+a, li, p, h1, h2, h3, h4, button{
+	font-family: "Open Sans";
+	font-size: 14px;
+	font-weight: 20px;
+	text-decoration: none;
+	font-weight: 400;
+	color: black;
+}
+footer{
+	background: #0D3CD4;
+}
+li{
+	display: inline-block;
+}
+
+.footer_menu{
+	padding: 10px 0px 10px 0px;	
+	text-align: center;
+	justify-content: flex-end
+}
+.footer_menu a{
+	color: white;
+	display: block;
+	font-weight: 500;
+}
+.footer_menu li{
+	color: white;
+    padding: 10px;
+}
+
+.name_fields{
+	margin-bottom: 5px;
+	text-align: center;
+	align-items: center;
+}
+.footer_menu button{
+	background: #0D3CD4;
+	border: none;
+	color: white;
+	font-weight: 500;
+	cursor: pointer;
+	margin: -4px;
+}
+
+.service__base_menu{
+	background: #0DA5D4;
+}
+.service__base_menu ul{
+	padding: 10px 0px 10px 0px;
+	text-align: center;
+	margin-bottom: 0px;
+}
+.service__base_menu li{
+	padding: 10px;
+	background: white;
+	margin: 0px 5px 0px 5px;
+	border: 2px solid #154bff;
+    border-radius: 4px;
+}
+.service__base_menu li:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+
+
+.service__base_menu a{
+	display: block;
+}
+
+.service_h1{
+    font-size: 30px;
+    text-align: center;
+    margin: 10px 10px;
+    
+}
+.spis_orders, .spis_works, .spis_parts{
+	margin-top: -1px;
+	background: #01f3eb26;
+}
+.spis_parts li{
+	display: inline-block;
+	border: 1px solid;
+	padding: 10px 0px 10px 5px;
+	text-align: center;
+}
+.spis_orders li{
+	display: inline-block;
+	border: 1px solid;
+	padding: 10px 0px 10px 5px;
+	text-align: center;
+}
+
+.spis_works li{
+	display: inline-block;
+	border: 1px solid;
+	padding: 10px 0px 10px 5px;
+	text-align: center;
+}
+
+.order_box{
+	display: block;
+	color: black;
+	margin-bottom: 1px;
+}
+.spis_orders:hover{
+	text-decoration: underline 1.5px;
+}
+.spis_parts:hover{
+	text-decoration: underline 1.5px;
+}
+
+.form_user{
+	justify-content: center;
+}
+.form_user input{
+	width: 97%;
+	margin: 5px 0 15px 0;
+}
+.form_user lable{
+	width: 97%;
+}
+.form_user button{
+	width: 100%;
+}
+
+.loginuser{
+	font-size: 30px;
+    text-align: center;
+    margin: 10px 0px 20px 0px;
+}
+
+#add_order, #add_work, #add_parts, #add_detail{
+	position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: block;
+}
+
+.add_order, .add_work, .add_parts{
+	margin: 10px 0px 10px 0px;
+	border: 2px solid #154bff;
+	border-radius: 10px;
+}
+.add_order form, .add_work form{
+	justify-content: space-between;
+	margin: auto;
+	padding: 10px;
+}
+.add_order input, .add_work input{
+	margin: 5px 0px 5px 0px;
+	width: 100%;
+	outline: none;
+}
+.add_order button, .add_work button{
+	margin: 10px 0px 5px 0px;
+	border: 2px solid #154bff;
+	border-radius: 5px;
+}
+.add_order textarea, .add_work textarea{
+	margin: 5px 0px 5px 0px;
+}
+
+.add__order_menu, .add__work_menu{
+	background: white;
+}
+.add_order button:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+.add_work button:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+.add_work select{
+	width: 100%;
+	font-size: 18px;
+	letter-spacing: 1px;
+}
+li.block_img{
+	padding: 0px 0px 0px 0px;
+	background: white;
+}
+
+.order_info{
+	margin: 10px 0px 10px 0px;
+} 
+.order_info li{
+	display: inline-block;
+	font-size: 14px;
+	border: 1px solid;
+    padding: 5px 10px 5px 10px;
+    margin-top: -1px;
+}
+
+.search_order input{
+	border: none;
+	padding: 10px 10px 10px 10px;
+	margin: 0px;
+	outline: none;
+}
+li.search_order{
+	padding: 0px;
+}
+.search_order button{
+	background: #01f3eb26;
+	border: none;
+	border-left: 2px solid #154bff;
+}
+.search_order button:hover{
+	background: #3b69ff;
+	color: white;
+}
+
+.executor_completed:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
+.executor_completed a{
+	display: block;	
+}
+li.executor_completed{
+	background: white;
+	border: 2px solid #154bff;
+	border-radius: 5px;
+}
+
+.messages{
+	justify-content: center;
+}
+.messages li{
+	padding: 20px;
+	border-radius: 5px;
+}
+.messages p{
+	margin: auto;
+}
+li.messages_error{
+	background: #ff000094;
+}
+li.messages_success{
+	background: #00ff007d;	
+}
+
+table {
+	table-layout: fixed;
+	width: 100%;
+	border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  font-size: 13px;
+}
+.detail_tabel th{
+ 	text-align: left;
+ 	border: 1.5px solid;
+ 	margin-top: 20px;
+}
+
+.detail_tabel td{
+ 	text-align: left;
+ 	border: 1.5px solid;
+}
+.parts__style_sp{
+	margin-top: 10px;
+	margin-bottom: 20px;	
+}
+
+
+
+

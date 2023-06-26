@@ -2,7 +2,9 @@
 {% block content %}
 
 <div class="container">
-    <div class="row">
+    <div class="row col-12 form_register">
+
+        <h1 class="service_h1 col-12">Регистрация сотрудника</h1>
 
         <form action="{% url 'register_user' %}" method="post" class="col-6 row">
             {% csrf_token %}
@@ -19,17 +21,14 @@
             <label for="{{ form_user.password2.id_for_label }}" class="col-5">Повторите пароль</label>
             <p class="col-7">{{ form_user.password2 }}</p>
 
-<!--            <label for="{{ form_person.jod_title.id_for_label }}" class="col-5">Должность</label>-->
-<!--            <p class="col-7">{{ form_person.jod_title }}</p>-->
-
             <label for="jod_title" class="col-5">Должность</label>
             <select name="jod_title" id="jod_title" class="col-7">
                 <option value="Механик">Механик</option>
                 <option value="Мастер">Мастер</option>
-                <option value="Склад">Склад</option>
+<!--                <option value="Склад">Склад</option>-->
             </select>
 
-            <button type="submit" class="col-6">Создать</button>
+            <button type="submit" class="col-12">Зарегистрировать</button>
         </form>
 
     </div>

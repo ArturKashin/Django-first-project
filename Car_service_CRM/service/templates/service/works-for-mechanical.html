@@ -3,7 +3,7 @@
 
 <div class="container">
     <div class="row">
-
+        <h1 class="service_h1 col-12">Заказ наряд № {{ order.id }}</h1>
         <h1 class="service_h1 col-12">Работы</h1>
 
         <ul class="row name_fields col-12">
@@ -14,27 +14,53 @@
             <li class="col-2">Статус</li>
         </ul>
 
+        <!--        список работ-->
         {% for work in works %}
         <ul class="row spis_works col-12">
             <li class="col-1">{{ forloop.counter }}</li>
             <li class="col-3" style="text-align: left;">{{ work.name }}</li>
             <li class="col-1">{{ work.standard }}</li>
-            <li class="col-2">{{ work.executor }}</li>
-
-            {% if work.order_status == 'В работе' and work.executor == '' %}
-                <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
-                {% elif work.order_status == 'Согласование' and work.executor == '' %}
-                <li style="background:#fcee77" class="col-5">{{ work.order_status }}</li>
-                {% else %}
-                <li style="background:#7bf57b" class="col-5">{{ work.order_status }}</li>
+            {% if work.executor == None %}
+            <li class="col-2"></li>
+            {% else %}
+            <li class="col-2">{{ work.executor|title }}</li>
             {% endif %}
 
-            {% if work.order_status == 'В работе' and work.executor == '' %}
+            {% if work.order_status == 'В работе' and work.executor == None %}
+            <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
+            {% elif work.order_status == 'Согласование' and work.executor == None %}
+            <li style="background:#fcee77" class="col-5">{{ work.order_status }}</li>
+            {% else %}
+            <li style="background:#7bf57b" class="col-5">{{ work.order_status }}</li>
+            {% endif %}
+
+            {% if work.order_status == 'В работе' and work.executor == None %}
             <li class="col-3 executor_completed"><a href="{% url 'executor-completed' work.id %}">Выполнить</a></li>
             {% endif %}
         </ul>
-
         {% endfor %}
+
+
+        {% if detail %}
+        <h1 class="service_h1 col-12">Запчасти</h1>
+        <!--        список запчастей-->
+        <ul class="row name_fields col-12">
+            <li class="col-1">№</li>
+            <li class="col-2">Артикул</li>
+            <li class="col-8">Название детали</li>
+            <li class="col-1">Расположение</li>
+        </ul>
+
+        <!--        список запчастей-->
+        {% for d in detail %}
+        <ul class="row spis_works col-12">
+            <li class="col-1">{{ forloop.counter }}</li>
+            <li class="col-2">{{ d.part_number }}</li>
+            <li class="col-8" style="text-align: left;">{{ d.part_name|capfirst }}</li>
+            <li class="col-1">{{ d.part_location }}</li>
+        </ul>
+        {% endfor %}
+        {% endif %}
 
     </div>
 </div>

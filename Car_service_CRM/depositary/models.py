@@ -19,4 +19,4 @@ class Depositary(models.Model):
         return f"{self.part_name}"
 
     class Meta:
-        ordering = ['part_name']
+        ordering = ['-id']

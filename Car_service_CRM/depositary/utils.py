@@ -1,9 +1,12 @@
+from django.core.paginator import Paginator
+from django.db.models import Q, Sum
 from django.shortcuts import redirect
 
 from depositary.forms import DepositaryForm, DepositaryOwnerForm
 from depositary.models import Depositary
+from service.forms import WorksForm
 from users.models import Person
-from service.models import Orders
+from service.models import Orders, WorksOrder
 
 
 def master_access(func):
@@ -44,9 +47,28 @@ def context_owner_of_detail(request, pk, *args, **kwargs):
             'parts_style': 'none', 'btn1_style': 'color:red; font-weight: 600'}
 
 
-def context_add_detail(request, pk, sk, *args, **kwargs):
-    order = Orders.objects.get(id=pk)
-    detail = Depositary.objects.get(id=sk)
-    detail.order = order
-    detail.save()
-    print(order, detail)
+def search_parts(search_query, start_date, end_date):
+    if search_query and start_date and end_date:
+        parts = Depositary.objects.filter(date_opening__gte=start_date) & \
+                Depositary.objects.filter(date_opening__lt=end_date) & \
+                Depositary.objects.filter(Q(part_name__iregex=search_query) |
+                                          Q(part_number__iregex=search_query))
+
+    elif search_query:
+        parts = Depositary.objects.distinct().filter(Q(part_name__iregex=search_query) |
+                                                     Q(part_number__iregex=search_query))
+
+    elif start_date and end_date:
+        parts = Depositary.objects.filter(date_opening__gte=start_date) & \
+                Depositary.objects.filter(date_opening__lt=end_date)
+
+    elif start_date:
+        parts = Depositary.objects.filter(date_opening__gte=start_date)
+
+    elif end_date:
+        parts = Depositary.objects.filter(date_opening__lt=end_date)
+
+    else:
+        parts = Depositary.objects.filter(date_closing=None)
+    return parts
+

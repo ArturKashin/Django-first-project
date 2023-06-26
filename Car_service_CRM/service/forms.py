@@ -1,5 +1,9 @@
 from django.forms import ModelForm
+from django import forms
+
+from users.models import Person
 from .models import Orders, WorksOrder
+from django.contrib.auth.models import User
 
 
 # форма добавления наряда
@@ -11,6 +15,7 @@ class OrdersForm(ModelForm):
                   'registration_number',
                   'notes',
                   ]
+        widgets = {'notes': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,10 +28,15 @@ class OrdersForm(ModelForm):
 class WorksForm(ModelForm):
     class Meta:
         model = WorksOrder
-        fields = ['name', 'standard', 'price']
+        fields = ['name', 'standard', 'price', 'executor']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['executor'].empty_label = 'Исполнитель не выбран'
 
-    # фильтр для добавления работ только в открытые наряды
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['order'].queryset = Orders.objects.filter(date_completed__isnull=True)
+        # выбор executor только механик
+        users = Person.objects.filter(jod_title='Механик')
+        id_mechanic = []
+        for user in users:
+            id_mechanic.append(user.user.id)
+        self.fields['executor'].queryset = User.objects.filter(id__in=id_mechanic)

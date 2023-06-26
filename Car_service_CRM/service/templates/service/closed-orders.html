@@ -10,7 +10,9 @@
                 <li class="col-12 search_order">
                     <form class="row col-12" action="{% url 'closed_orders' %}">
                         <input class="col-7" type="search" placeholder="Поиск" name="search">
-                        <button class="col-5" type="submit">Поиск</button>
+                        <input class="col-1" type="date" name="start-date" min="2023-01-01">
+                        <input class="col-1" type="date" name="end-date" min="2023-01-01">
+                        <button class="col-3" type="submit">Поиск</button>
                     </form>
                 </li>
                 {% endif %}
@@ -26,8 +28,9 @@
             <li class="col-1">Дата открытия наряда</li>
             <li class="col-1">Дата закрытия наряда</li>
         </ul>
-        {% for order in orders %}
 
+<!--    закрытые заказ наряды-->
+        {% for order in orders %}
         <a href="{% url 'closed-works' order.id %}" class="row col-12 order_box">
         <ul class="row spis_orders col-12">
             <li class="col-1">{{ order.id }}</li>
@@ -38,10 +41,28 @@
             <li class="col-1">{{ order.date_completed|date:'d.m.Y' }}</li>
         </ul>
         </a>
-
         {% endfor %}
 
     </div>
+</div>
+
+        <!--пагинация-->
+<div class="pagination">
+    <span class="step-links">
+        {% if orders.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ orders.previous_page_number }}">&#8592;</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ orders.number }} из {{ orders.paginator.num_pages }}.
+        </span>
+
+        {% if orders.has_next %}
+            <a href="?page={{ orders.next_page_number }}">&#8594;</a>
+            <a href="?page={{ orders.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
 </div>
 
 {% endblock %}

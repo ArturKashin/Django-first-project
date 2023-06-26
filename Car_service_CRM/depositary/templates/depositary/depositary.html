@@ -5,84 +5,136 @@
 
 <!--        поиск и добавление деталей на склад-->
 <div class="row add__order_menu service__base_menu col-12">
-<ul class="row col-12" style="justify-content: space-between">
-                {% if user.is_authenticated %}
-                <li class="col-2 add_ord"><label for="add_order">Добавить на склад</label><input id="add_order" type="checkbox"></li>
-                <li class="col-9 search_order">
-                    <form class="row col-12" action="{% url 'depositary' %}">
-                        <input class="col-7" type="search" placeholder="Поиск на складе" name="search">
-                        <button class="col-5" type="submit">Поиск</button>
-                    </form>
-                </li>
-                {% endif %}
-            </ul>
+    <ul class="row col-12" style="justify-content: space-between">
+        {% if user.is_authenticated %}
+        <li class="col-2 add_ord"><label for="add_order">Добавить на склад</label><input id="add_order" type="checkbox">
+        </li>
+        <li class="col-9 search_order">
+            <form id="search" class="row col-12" action="{% url 'depositary' %}">
+                <input class="col-6" type="search" placeholder="Поиск на складе" name="search">
+                <input class="col-2" type="date" name="start-date" min="2023-01-01">
+                <input class="col-2" type="date" name="end-date" min="2023-01-01">
+                <button class="col-2" type="submit">Поиск</button>
+            </form>
+        </li>
+        {% endif %}
+    </ul>
 </div>
 
 <!--        форма   -->
 <div class="row col-12 add_order" style="display:{{ parts_style }}">
-                <form method="POST" action="{% url 'add-part' %}" class="row col-12">
-                    {% csrf_token %}
-                    <ul class="row col-12">
-                        <li class="col-2">Артикул</li>
-                        <li class="col-6">Название детали</li>
-                        <li class="col-1">Расположение</li>
-                        <li class="col-1">Вход руб.</li>
-                        <li class="col-1">Наценка %</li>
-                        <li class="col-1">Количество, шт.</li>
-                    </ul>
-                    <ul class="row col-12">
-                        <li class="col-2">{{ form.part_number }}</li>
-                        <li class="col-6">{{ form.part_name }}</li>
-                        <li class="col-1">{{ form.part_location }}</li>
-                        <li class="col-1">{{ form.input_cost }}</li>
-                        <li class="col-1">{{ form.markup_cost }}</li>
-                        <li class="col-1">{{ form.quantity }}</li>
-                    </ul>
-                    <button class="col-4">Сохранить</button>
-                    <button type="reset" class="col-4">Очистить</button>
-                </form>
-        </div>
+    <form method="POST" action="{% url 'add-part' %}" class="row col-12">
+        {% csrf_token %}
+        <ul class="row col-12">
+            <li class="col-2">Артикул</li>
+            <li class="col-6">Название детали</li>
+            <li class="col-1">Расположение</li>
+            <li class="col-1">Вход руб.</li>
+            <li class="col-1">Наценка %</li>
+            <li class="col-1">Количество, шт.</li>
+        </ul>
+        <ul class="row col-12">
+            <li class="col-2">{{ form.part_number }}</li>
+            <li class="col-6">{{ form.part_name }}</li>
+            <li class="col-1">{{ form.part_location }}</li>
+            <li class="col-1">{{ form.input_cost }}</li>
+            <li class="col-1">{{ form.markup_cost }}</li>
+            <li class="col-1">{{ form.quantity }}</li>
+        </ul>
+        <button class="col-4">Сохранить</button>
+        <button type="reset" class="col-4">Очистить</button>
+    </form>
+</div>
 
 <!--        сообщения error или success-->
 {% if messages %}
 <ul class="messages col-12 row">
-                    {% for message in messages %}
-                        <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
-                    {% endfor %}
-                </ul>
+    {% for message in messages %}
+    <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
+    {% endfor %}
+</ul>
 {% endif %}
 
+<div class="col-12 row">
+    <h1 class="service_h1 col-12">Детали на складе</h1>
+</div>
 
-<h1 class="service_h1 col-12">Детали</h1>
+
 <ul class="row name_fields col-12">
-            <li class="col-2">Артикул</li>
-            <li class="col-5">Название детали</li>
-            <li class="col-1">Расположение</li>
-            <li class="col-1">Вход руб.</li>
-            <li class="col-1">Наценка %</li>
-            <li class="col-1">Выход руб.</li>
-            <li class="col-1">Количество, шт.</li>
-        </ul>
+    <li class="col-2">Артикул</li>
+    <li class="col-4">Название детали</li>
+    <li class="col-1">Расположение</li>
+    <li class="col-1">Вход руб.</li>
+    <li class="col-1">Наценка %</li>
+    <li class="col-1">Выход руб.</li>
+    <li class="col-1">Количество, шт.</li>
+    <li class="col-1">З/наряд №</li>
+</ul>
 
 <!--список деталей-->
 {% for part in parts %}
-    {% if part.order != Null %}
-    <a href="{% url 'detail' part.id %}" class="row col-12 order_box" style="background: #7bf57b">
-    {% else %}
-    <a href="{% url 'detail' part.id %}" class="row col-12 order_box">
-        {% endif %}
-            <ul class="row spis_parts col-12">
-                <li class="col-2">{{ part.part_number }}</li>
-                <li class="col-5" style="text-align: left;">{{ part.part_name|capfirst }}</li>
-                <li class="col-1">{{ part.part_location }}</li>
-                <li class="col-1">{{ part.input_cost }}</li>
-                <li class="col-1">{{ part.markup_cost }}</li>
-                <li class="col-1">{{ part.output_cost }}</li>
-                <li class="col-1">{{ part.quantity }}</li>
-            </ul>
-        </a>
-
+{% if part.order != Null and part.order.date_completed == Null %}
+<a href="{% url 'detail' part.id %}" class="row col-12 order_box" style="background: #fcee77">
+    <ul class="row spis_parts col-12">
+        <li class="col-2">{{ part.part_number }}</li>
+        <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+        <li class="col-1">{{ part.part_location }}</li>
+        <li class="col-1">{{ part.input_cost }}</li>
+        <li class="col-1">{{ part.markup_cost }}</li>
+        <li class="col-1">{{ part.output_cost }}</li>
+        <li class="col-1">{{ part.quantity }}</li>
+        <li class="col-1">{{ part.order.id }}</li>
+    </ul>
+</a>
+{% elif part.order.date_completed %}
+<a href="{% url 'detail' part.id %}" class="row col-12 order_box" style="background: #7bf57b">
+    <ul class="row spis_parts col-12">
+        <li class="col-2">{{ part.part_number }}</li>
+        <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+        <li class="col-1">{{ part.part_location }}</li>
+        <li class="col-1">{{ part.input_cost }}</li>
+        <li class="col-1">{{ part.markup_cost }}</li>
+        <li class="col-1">{{ part.output_cost }}</li>
+        <li class="col-1">{{ part.quantity }}</li>
+        <li class="col-1">{{ part.order.id }}</li>
+    </ul>
+</a>
+{% else %}
+<a href="{% url 'detail' part.id %}" class="row col-12 order_box">
+    <ul class="row spis_parts col-12">
+        <li class="col-2">{{ part.part_number }}</li>
+        <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+        <li class="col-1">{{ part.part_location }}</li>
+        <li class="col-1">{{ part.input_cost }}</li>
+        <li class="col-1">{{ part.markup_cost }}</li>
+        <li class="col-1">{{ part.output_cost }}</li>
+        <li class="col-1">{{ part.quantity }}</li>
+        <li class="col-1">{{ part.order.id }}</li>
+    </ul>
+</a>
+{% endif %}
 {% endfor %}
 
+<!--пагинация-->
+<div class="pagination">
+    <span class="step-links">
+        {% if parts.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ parts.previous_page_number }}">&#8592;</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ parts.number }} из {{ parts.paginator.num_pages }}.
+        </span>
+
+        {% if parts.has_next %}
+            <a href="?page={{ parts.next_page_number }}">&#8594;</a>
+            <a href="?page={{ parts.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+<!--<script src="{% static 'js/script.js' %}"></script>-->
 
 {% endblock %}

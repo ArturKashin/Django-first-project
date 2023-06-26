@@ -1,0 +1,37 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<h1 class="service_h1 col-12">Персонал</h1>
+
+<ul class="row name_fields col-12">
+    <li class="col-1">№</li>
+    <li class="col-5">Имя</li>
+    <li class="col-3">Должность</li>
+    <li class="col-3">Дата трудоустройства</li>
+</ul>
+
+<!--список работников-->
+{% for worker in workers %}
+{% if worker.jod_title == 'Механик' %}
+<a href="{% url 'view-worker' worker.id %}" class="row col-12 order_box">
+    <ul class="row spis_orders col-12">
+        <li class="col-1">{{ forloop.counter }}</li>
+        <li class="col-5" style="text-align:left">{{ worker.name }}</li>
+        <li class="col-3">{{ worker.jod_title }}</li>
+        <li class="col-3">{{ worker.created|date:'d.m.Y' }}</li>
+    </ul>
+</a>
+{% elif worker.jod_title == 'Мастер' %}
+<a href="{% url 'view-master' worker.id %}" class="row col-12 order_box">
+    <ul class="row spis_orders col-12">
+        <li class="col-1">{{ forloop.counter }}</li>
+        <li class="col-5" style="text-align:left">{{ worker.name }}</li>
+        <li class="col-3">{{ worker.jod_title }}</li>
+        <li class="col-3">{{ worker.created|date:'d.m.Y' }}</li>
+    </ul>
+</a>
+{% endif %}
+{% endfor %}
+
+
+{% endblock %}

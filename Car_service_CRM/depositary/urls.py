@@ -11,4 +11,5 @@ urlpatterns = [
     path('owner-of-detail/<str:pk>/', views.owner_of_detail, name='owner-of-detail'),
     path('remove-detail-from-order/<str:pk>/', views.remove_detail_from_order, name='remove-detail-from_order'),
     path('add-detail/(<str:pk>, <str:sk>)/', views.add_detail, name='add-detail'),
+    path('open-order/<str:pk>/', views.open_order, name='open-order'),
 ]

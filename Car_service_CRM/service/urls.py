@@ -17,6 +17,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('worksorder/<str:pk>/', views.worksorder, name='worksorder'),
     path('close-order/<str:pk>/', views.close_order, name='close-order'),
+    path('reopening_order/<str:pk>', views.reopening_order, name='reopening-order'),
 
     # закрытые наряды и работы
     path('closed-orders/', views.closer_orders, name="closed_orders"),

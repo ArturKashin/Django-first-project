@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import OrdersForm, WorksForm
 from .models import Orders, WorksOrder
+from .utils import search_order, paginator_order
 from depositary.models import Depositary
 from django.db.models import Q, Sum
 from users.models import Person
@@ -29,22 +30,64 @@ class WorksOrderViewSet(viewsets.ModelViewSet):
 @login_required(login_url='loginuser')
 @master_access
 def index(request):
+    person = Person.objects.get(user=request.user)
     if request.method == "GET":
         search_query = request.GET.get('search', '')
-        person = Person.objects.get(user=request.user)
-        if search_query:
-            orders = Orders.objects.distinct().filter(Q(date_completed__isnull=True),
-                                                      Q(vin_number__icontains=search_query) |
-                                                      Q(registration_number__icontains=search_query))
-        else:
-            orders = Orders.objects.filter(date_completed__isnull=True)
+        start_date = request.GET.get('start-date', '')
+        end_date = request.GET.get('end-date', '')
+        open_orders = True
 
-        context = {'orders': orders, 'person': person, 'form': OrdersForm(), 'order_style': 'none'}
+        orders = search_order(search_query, start_date, end_date, open_orders)
+        orders = paginator_order(request, orders)
+
+        context = {
+            'orders': orders,
+            'person': person,
+            'form': OrdersForm(),
+            'order_style': 'none'
+        }
+        return render(request, 'service/index.html', context)
+
+    if request.method == "POST":
+        try:
+            form = OrdersForm(request.POST)
+            new_form = form.save(commit=False)
+            new_form.master = request.user
+            new_form.save()
+            return redirect('index')
+        except ValueError:
+            context = {'form': OrdersForm(),
+                       'error': 'Некорректный ввод данных, попробуйте еще раз',
+                       'order_style': 'none'}
+            return render(request, 'service/index.html', context)
+
+
+# повторное открытие наряда
+def reopening_order(request, pk):
+    if request.method == "GET":
+        person = Person.objects.get(user=request.user)
+        search_query = request.GET.get('search', '')
+        start_date = request.GET.get('start-date', '')
+        end_date = request.GET.get('end-date', '')
+        open_orders = True
+
+        orders = search_order(search_query, start_date, end_date, open_orders)
+        orders = paginator_order(request, orders)
+
+        order = Orders.objects.get(id=pk)
+        print(order)
+        context = {
+            'orders': orders,
+            'person': person,
+            'form': OrdersForm(instance=order),
+        }
         return render(request, 'service/index.html', context)
     if request.method == "POST":
         try:
             form = OrdersForm(request.POST)
-            form.save()
+            new_form = form.save(commit=False)
+            new_form.master = request.user
+            new_form.save()
             return redirect('index')
         except ValueError:
             context = {'form': OrdersForm(),
@@ -56,15 +99,14 @@ def index(request):
 # Открытые наряды для механиков
 @login_required(login_url='loginuser')
 def order_for_mechanical(request):
+    person = Person.objects.get(user=request.user)
     if request.method == "GET":
         search_query = request.GET.get('search', '')
-        person = Person.objects.get(user=request.user)
-        if search_query:
-            orders = Orders.objects.filter(Q(date_completed__isnull=True),
-                                           Q(vin_number__icontains=search_query) |
-                                           Q(registration_number__icontains=search_query))
-        else:
-            orders = Orders.objects.filter(date_completed__isnull=True)
+        start_date = request.GET.get('start-date', '')
+        end_date = request.GET.get('end-date', '')
+        open_orders = True
+
+        orders = search_order(search_query, start_date, end_date, open_orders)
 
         context = {'orders': orders, 'person': person}
         return render(request, 'service/order-for-mechanical.html', context)
@@ -75,7 +117,15 @@ def order_for_mechanical(request):
 def works_for_mechanical(request, pk):
     person = Person.objects.get(user=request.user)
     works = WorksOrder.objects.filter(order=pk)
-    context = {'works': works, 'person': person}
+    detail = Depositary.objects.filter(order=pk)
+    order = Orders.objects.get(id=pk)
+    context = {
+        'works': works,
+        'person': person,
+        'detail': detail,
+        'order': order,
+    }
+
     return render(request, 'service/works-for-mechanical.html', context)
 
 
@@ -85,13 +135,17 @@ def works_for_mechanical(request, pk):
 def closer_orders(request):
     person = Person.objects.get(user=request.user)
     search_query = request.GET.get('search', '')
-    if search_query:
-        orders = Orders.objects.filter(Q(date_completed__isnull=False),
-                                       Q(vin_number__icontains=search_query) |
-                                       Q(registration_number__icontains=search_query))
-    else:
-        orders = Orders.objects.filter(date_completed__isnull=False)
-    context = {'orders': orders, 'person': person}
+    start_date = request.GET.get('start-date', '')
+    end_date = request.GET.get('end-date', '')
+    open_orders = False
+
+    orders = search_order(search_query, start_date, end_date, open_orders)
+    orders = paginator_order(request, orders)
+
+    context = {
+        'orders': orders,
+        'person': person
+    }
     return render(request, 'service/closed-orders.html', context)
 
 
@@ -102,7 +156,20 @@ def closed_works(request, pk):
     person = Person.objects.get(user=request.user)
     order = Orders.objects.get(id=pk)
     works = WorksOrder.objects.filter(order=pk)
-    context = {'works': works, 'person': person, 'order': order}
+    detail = Depositary.objects.filter(order=order)
+
+    sum_detail = detail.aggregate(Sum('output_cost'))
+    sum_detail = sum_detail['output_cost__sum']
+    sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
+
+    context = {
+        'works': works,
+        'person': person,
+        'order': order,
+        'detail': detail,
+        'sum_detail': sum_detail,
+        'sum_works_detail': sum_works_detail,
+    }
     return render(request, 'service/closed-works.html', context)
 
 
@@ -114,16 +181,24 @@ def worksorder(request, pk):
     works = WorksOrder.objects.filter(order=order)
     person = Person.objects.get(user=request.user)
     parts = Depositary.objects.filter(order=None)
-
     detail = Depositary.objects.filter(order=order)
     sum_detail = detail.aggregate(Sum('output_cost'))
     sum_detail = sum_detail['output_cost__sum']
     sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
 
-    context = {'works': works, 'order': order, 'person': person, 'form': WorksForm(), 'edit_style': 'none',
-               'parts_style': 'none', 'parts__style_sp': 'none', 'parts': parts,
-               'detail': detail,
-               'sum_detail': sum_detail, 'sum_works_detail': sum_works_detail}
+    context = {
+        'works': works,
+        'order': order,
+        'person': person,
+        'form': WorksForm(),
+        'edit_style': 'none',
+        'parts_style': 'none',
+        'parts__style_sp': 'none',
+        'parts': parts,
+        'detail': detail,
+        'sum_detail': sum_detail,
+        'sum_works_detail': sum_works_detail
+    }
     if request.method == "GET":
         return render(request, 'service/worksorder.html', context)
     else:
@@ -166,7 +241,7 @@ def delete_work(request, pk):
 @master_access
 def at_work(request, pk):
     # наряд к которому привязана работа
-    work = WorksOrder.objects.get(id=pk)
+    # work = WorksOrder.objects.get(id=pk)
     if request.method == "GET":
         if WorksOrder.objects.filter(id=pk, order_status="Согласование"):
             WorksOrder.objects.filter(id=pk).update(order_status="В работе")
@@ -205,15 +280,30 @@ def edit_work(request, pk):
     sum_detail = sum_detail['output_cost__sum']
     sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
 
-    context = {'form': form, 'works': works, 'person': person, 'order': order, 'edit_style': '',
-               'sum_detail': sum_detail, 'sum_works_detail': sum_works_detail}
+    context = {
+        'form': form,
+        'works': works,
+        'person': person,
+        'order': order,
+        'edit_style': '',
+        'parts_style': 'none',
+        'parts__style_sp': 'none',
+        'sum_detail': sum_detail,
+        'sum_works_detail': sum_works_detail
+    }
 
     if request.method == "POST":
         form = WorksForm(request.POST, instance=work)
+
         if form.is_valid():
             # изменение стоимости работы после редактирования работы
             work_edit = form.save(commit=False)
             work_edit.final_price = work_edit.price * work_edit.standard
+            # изменение статуса работы после назначения исполнителя
+            if work_edit.executor:
+                work_edit.order_status = 'Выполнено'
+            else:
+                work_edit.order_status = 'В работе'
             work_edit.save()
 
             # изменение стоимости наряда после редактирования работы
@@ -229,16 +319,22 @@ def edit_work(request, pk):
 @login_required(login_url='loginuser')
 @master_access
 def close_order(request, pk):
-    person = Person.objects.get(user=request.user)
     order = Orders.objects.get(id=pk)
     works = WorksOrder.objects.filter(order=order)
+    details = Depositary.objects.filter(order=pk)
     for work in works:
         if work.order_status != 'Выполнено':
-            context = {'order': order, 'works': works, 'person': person}
             messages.error(request, 'Присутствуют не выполненные работы, удалите либо выполните работы!')
             return redirect(f'/worksorder/{order.id}/')
     order.date_completed = datetime.now()
     order.save()
+
+    # дата отгрузки детали со склада
+    for detail in details:
+        detail.date_closing = datetime.now()
+        detail.save()
+        print(detail)
+
     messages.success(request, "Наряд успешно закрыт")
     return redirect('index')
 

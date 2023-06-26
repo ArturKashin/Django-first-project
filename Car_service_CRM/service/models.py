@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from users.models import Person
 
 
 class Orders(models.Model):
@@ -11,9 +10,13 @@ class Orders(models.Model):
     date_start = models.DateTimeField(auto_now_add=True, verbose_name='Дата открытия наряда')
     date_completed = models.DateTimeField(null=True, blank=True, verbose_name='Дата закрытия наряда')
     final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость наряда')
+    master = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Мастер приемщик')
 
     def __str__(self):
         return f"заказ-наряд №{self.id}, А/М № '{self.registration_number}', {self.client}"
+
+    class Meta:
+        ordering = ['-id']
 
 
 class WorksOrder(models.Model):
@@ -24,7 +27,8 @@ class WorksOrder(models.Model):
     final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость работы')
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, verbose_name='Выбор з/наряда')
     completed = models.CharField(max_length=30, default='Не определено', verbose_name='Исполнитель')
-    executor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Исполнитель', default='')
+    executor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Исполнитель', null=True, blank=True,
+                                 default='')
 
     def __str__(self):
         return f"{self.order} -->> {self.name}"

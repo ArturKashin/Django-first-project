@@ -2,9 +2,8 @@
 {% block content %}
 {% load static %}
 
-<div class="container">
+<div class="container" style="margin-bottom: 30px;">
     <div class="row">
-
 
         {% if order.date_completed == Null and person.jod_title == "Мастер" %}
         <div class="row add__work_menu service__base_menu col-12">
@@ -19,6 +18,7 @@
         </div>
         {% endif %}
 
+        <h1 class="service_h1 col-12">Открытый заказ наряд № {{ order.id }}</h1>
 
         <!--        добавление запчастей-->
         <div class="row add_part add__order_menu service__base_menu col-12" style="display:{{ parts_style }}">
@@ -35,44 +35,54 @@
         </div>
 
         <div class="parts__style_sp row col-12" style="display:{{ parts__style_sp }}">
+            <ul class="row name_fields col-12">
+                <li class="col-2">Артикул</li>
+                <li class="col-4">Название детали</li>
+                <li class="col-1">Расположение</li>
+                <li class="col-1">Вход руб.</li>
+                <li class="col-1">Наценка %</li>
+                <li class="col-1">Выход руб.</li>
+                <li class="col-1">Количество, шт.</li>
+            </ul>
             {% for part in parts %}
-                <ul class="row spis_parts col-12">
-                    <li class="col-2">{{ part.part_number }}</li>
-                    <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
-                    <li class="col-1">{{ part.part_location }}</li>
-                    <li class="col-1">{{ part.input_cost }}</li>
-                    <li class="col-1">{{ part.markup_cost }}</li>
-                    <li class="col-1">{{ part.output_cost }}</li>
-                    <li class="col-1">{{ part.quantity }}</li>
-                    <li class="col-1" style="padding:0px; background:white"><a href="{% url 'add-detail' order.id part.id %}"><img src="{% static 'image/257.png' %}" alt="Статус"></a></li>
-                </ul>
+            <ul class="row spis_parts col-12">
+                <li class="col-2">{{ part.part_number }}</li>
+                <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
+                <li class="col-1">{{ part.part_location }}</li>
+                <li class="col-1">{{ part.input_cost }}</li>
+                <li class="col-1">{{ part.markup_cost }}</li>
+                <li class="col-1">{{ part.output_cost }}</li>
+                <li class="col-1">{{ part.quantity }}</li>
+                <li class="col-1" style="padding:0px; background:white"><a
+                        href="{% url 'add-detail' order.id part.id %}"><img src="{% static 'image/257.png' %}"
+                                                                            alt="Статус"></a></li>
+            </ul>
             {% endfor %}
         </div>
 
 
-
-<!--        информация о наряде-->
+        <!--        информация о наряде-->
         {% if person.jod_title == "Мастер" %}
         <div class="row col-12 order_info">
             <ul class="row col-12">
                 <li class="col-4">{{ order.client }}</li>
                 <li class="col-2">{{ order.vin_number }}</li>
                 <li class="col-2" style="text-align:center">{{ order.registration_number }}</li>
-<!--                стоимость работ-->
+                <!--                стоимость работ-->
                 {% if order.final_price %}
                 <li class="col-2" style="text-align:right; background:#7bf57b">
-                    Работы: {{ order.final_price }} руб.
+                    Работы: {{ order.final_price|floatformat:2 }} руб.
                 </li>
                 {% else %}
                 <li class="col-2" style="text-align:right; background:#7bf57b">
-                    Работы: {{ order.final_price }} руб.
+                    Работы: {{ order.final_price|floatformat:2 }} руб.
                 </li>
                 {% endif %}
 
-<!--                стоимость деталей-->
+                <!--                стоимость деталей-->
                 {% if sum_detail %}
                 <li class="col-2" style="text-align:right; background:#7bf57b">
-                    Детали: {{ sum_detail }} руб.
+                    Детали: {{ sum_detail|floatformat:2 }} руб.
                 </li>
                 {% else %}
                 <li class="col-2" style="text-align:right; background:#7bf57b">
@@ -83,46 +93,48 @@
 
                 <li class="col-8">Примечание: {{ order.notes }}</li>
                 <li class="col-4" style="text-align:right; background:#7bf57b">
-                    Итог: {{ sum_works_detail }} руб.
+                    Итог: {{ sum_works_detail|floatformat:2 }} руб.
                 </li>
+                <li class="col-12">Дата открытия: {{ order.date_start }}</li>
 
             </ul>
         </div>
         {% endif %}
 
-<!--            форма добавления работ-->
+        <!--            форма добавления работ-->
         <div class="row col-12 add_work" style="display:{{ edit_style }}">
-                <form method="POST" class="row col-12">
-                    {% csrf_token %}
-                    <ul class="row col-12">
-                        <li class="col-8">{{ form.name.label }}</li>
-                        <li class="col-2">{{ form.standard.label }}</li>
-                        <li class="col-2">{{ form.price.label }}</li>
-                    </ul>
-                    <ul class="row col-12">
-                        <li class="col-8">{{ form.name }}</li>
-                        <li class="col-2">{{ form.standard }}</li>
-                        <li class="col-2">{{ form.price }}</li>
-                    </ul>
-                    <button class="col-4">Сохранить</button>
-                    <button type="reset" class="col-4">Очистить</button>
-                </form>
+            <form method="POST" class="row col-12">
+                {% csrf_token %}
+                <ul class="row col-12">
+                    <li class="col-8">{{ form.name.label }}</li>
+                    <li class="col-2">{{ form.standard.label }}</li>
+                    <li class="col-2">{{ form.price.label }}</li>
+                </ul>
+                <ul class="row col-12">
+                    <li class="col-8">{{ form.name }}</li>
+                    <li class="col-2">{{ form.standard }}</li>
+                    <li class="col-2">{{ form.price }}</li>
+                    <li class="col-4">{{ form.executor }}</li>
+                </ul>
+                <button class="col-4">Сохранить</button>
+                <button type="reset" class="col-4">Очистить</button>
+            </form>
         </div>
 
 
         <h1 class="service_h1 col-12">Работы</h1>
 
-<!--        сообщения error или success-->
+        <!--        сообщения error или success-->
         {% if messages %}
         <ul class="messages col-12 row">
             {% for message in messages %}
-                <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
+            <li class="messages_{{ message.tags }} row col-6"><p>{{ message }}</p></li>
             {% endfor %}
         </ul>
         {% endif %}
 
 
-<!--        список работ-->
+        <!--        список работ-->
         {% if works %}
         <ul class="row name_fields col-12">
             <li class="col-1">№</li>
@@ -135,35 +147,42 @@
         </ul>
         {% endif %}
 
-<!--        список работ-->
+        <!--        список работ-->
         {% for work in works %}
         <ul class="row spis_works col-12">
             <li class="col-1">{{ forloop.counter }}</li>
             <li class="col-3" style="text-align: left;">{{ work.name }}</li>
             <li class="col-1">{{ work.standard }}</li>
+            {% if work.executor == None %}
+            <li class="col-2"></li>
+            {% else %}
             <li class="col-2">{{ work.executor|title }}</li>
-
-            {% if work.order_status == 'В работе' and work.executor == '' %}
-                <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
-                {% elif work.order_status == 'Согласование' and work.executor == '' %}
-                <li style="background:#ff0000b5" class="col-2">{{ work.order_status }}</li>
-                {% else %}
-                <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
             {% endif %}
 
-                <li class="col-1">{{ work.price }}</li>
-                <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
+            {% if work.order_status == 'В работе' and work.executor == None %}
+            <li style="background:#fcee77" class="col-2">{{ work.order_status }}</li>
+            {% elif work.order_status == 'Согласование' and work.executor == None %}
+            <li style="background:#ff0000b5" class="col-2">{{ work.order_status }}</li>
+            {% else %}
+            <li style="background:#7bf57b" class="col-2">{{ work.order_status }}</li>
+            {% endif %}
 
-                <li class="col-1 row block_img">
-                    {% if work.order_status == 'Согласование' and work.order_status != 'Выполнено' %}
-                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}" alt="Статус"></a>
-                    {% elif work.order_status == 'В работе' and work.order_status != 'Выполнено' %}
-                        <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}" alt="Статус"></a>
-                    {% endif %}
-    <!--                написать функцию в js для открытия окна работ, подключить-->
-                    <a class="col-3" href="{% url 'edit-work' work.id %}"><img src="{% static 'image/top.png' %}" alt="Изменить"></a>
-                    <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}" alt="Удалить"></a>
-                </li>
+            <li class="col-1">{{ work.price }}</li>
+            <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
+
+            <li class="col-1 row block_img">
+                {% if work.order_status == 'Согласование' and work.order_status != 'Выполнено' %}
+                <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/257.png' %}"
+                                                                         alt="Статус"></a>
+                {% elif work.order_status == 'В работе' and work.order_status != 'Выполнено' %}
+                <a class="col-3" href="{% url 'at-work' work.id %}"><img src="{% static 'image/back.png' %}"
+                                                                         alt="Статус"></a>
+                {% endif %}
+                <a class="col-3" href="{% url 'edit-work' work.id %}"><img src="{% static 'image/top.png' %}"
+                                                                           alt="Изменить"></a>
+                <a class="col-3" href="{% url 'delete-work' work.id %}"><img src="{% static 'image/exit_close.png' %}"
+                                                                             alt="Удалить"></a>
+            </li>
         </ul>
         {% endfor %}
 
@@ -171,10 +190,11 @@
         {% if detail %}
         <h1 class="service_h1 col-12">Запчасти</h1>
 
-<!--        список запчастей-->
+        <!--        список запчастей-->
         <ul class="row name_fields col-12">
+            <li class="col-1">№</li>
             <li class="col-2">Артикул</li>
-            <li class="col-4">Название детали</li>
+            <li class="col-3">Название детали</li>
             <li class="col-1">Расположение</li>
             <li class="col-1">Вход руб.</li>
             <li class="col-1">Наценка %</li>
@@ -182,17 +202,19 @@
             <li class="col-1">Количество, шт.</li>
         </ul>
 
-<!--        список запчастей-->
+        <!--        список запчастей-->
         {% for d in detail %}
         <ul class="row spis_works col-12">
+            <li class="col-1">{{ forloop.counter }}</li>
             <li class="col-2">{{ d.part_number }}</li>
-            <li class="col-4" style="text-align: left;">{{ d.part_name|capfirst }}</li>
+            <li class="col-3" style="text-align: left;">{{ d.part_name|capfirst }}</li>
             <li class="col-1">{{ d.part_location }}</li>
             <li class="col-1">{{ d.input_cost }}</li>
             <li class="col-1">{{ d.markup_cost }}</li>
             <li class="col-1">{{ d.output_cost }}</li>
             <li class="col-1">{{ d.quantity }}</li>
-            <li class="col-1 row block_img"><a href="{% url 'remove-detail-from_order' d.id %}"><img src="{% static 'image/exit_close.png' %}" alt="Удалить"></a></li>
+            <li class="col-1 row block_img"><a href="{% url 'remove-detail-from_order' d.id %}"><img
+                    src="{% static 'image/exit_close.png' %}" alt="Удалить"></a></li>
         </ul>
         {% endfor %}
         {% endif %}

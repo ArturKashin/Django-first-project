@@ -3,12 +3,12 @@
 {% load static %}
 
 <!--меню управления-->
- {% if person.jod_title == "Мастер" %}
+ {% if person.jod_title == "Мастер" and detail.order.date_completed == Null %}
         <div class="row add__work_menu service__base_menu col-12">
             <ul class="row col-12">
                 <li class="col-2 add_works"><label for="add_work"><a style="{{ btn_style }}" href="{% url 'edit-detail' detail.id %}">Изменить</a></label>
                     <input id="add_work" type="checkbox"></li>
-                <li class="col-2 add_detail"><label for="add_detail"><a style="{{ btn1_style }}" href="{% url 'owner-of-detail' detail.id %}">К з/наряду</a></label>
+                <li class="col-2 add_detail"><label for="add_detail"><a style="{{ btn1_style }}" href="{% url 'owner-of-detail' detail.id %}">Зарезервировать</a></label>
                     <input id="add_detail" type="checkbox"></li>
                 <li class="col-2"><a href="{% url 'delete-detail' detail.id %}">Списать</a></li>
             </ul>
@@ -93,7 +93,9 @@
         {% endif %}
 
         {% if detail.order %}
-            <td class="col-1">{{ detail.order }}</td>
+            <td class="col-1" style="background: #7bf57b; text-align:center;">
+                <a style="display:block; padding: 5px 0px;" href="{% url 'open-order' detail.order.id %}">{{ detail.order.id }}</a>
+            </td>
         {% else %}
             <td class="col-1"></td>
         {% endif %}

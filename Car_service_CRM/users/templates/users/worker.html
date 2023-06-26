@@ -1,0 +1,105 @@
+{% extends 'service/base.html' %}
+{% block content %}
+
+<div class="row col-12">
+    <h1 class="service_h1 col-6">Выполненные з/наряды</h1>
+    <h1 class="service_h1 col-5">Выработка за период &nbsp<u>{{ production_employee }}</u>&nbsp н/ч</h1>
+</div>
+
+
+<!--        поиск заказ нарядов-->
+<div class="row add__order_menu service__base_menu col-12">
+    <ul class="row col-12" style="justify-content: space-between">
+        <li class="col-12 search_order">
+            <form class="row col-12" action="{% url 'view-worker' worker.id%}">
+                <input class="col-7" type="search" placeholder="Поиск заказ нарядов" name="search">
+                <input class="col-1" type="date" name="start-date" min="2023-01-01">
+                <input class="col-1" type="date" name="end-date" min="2023-01-01">
+                <button class="col-3" type="submit">Поиск</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+
+<!--список нарядов-->
+{% for order in orders %}
+<ul class="row name_fields col-12">
+    <li class="col-1">№ З/Н</li>
+    <li class="col-4">Клиент</li>
+    <li class="col-2">VIN</li>
+    <li class="col-1">№ А/М</li>
+    <li class="col-1">Дата открытия наряда</li>
+    <li class="col-1">Дата закрытия наряда</li>
+    <li class="col-1">Итог(руб.)</li>
+    <li class="col-1">Итог(норм/час)</li>
+</ul>
+
+<div style="margin-bottom:40px;">
+
+    <a href="{% url 'open-order' order.id %}" class="row col-12 order_box">
+        <ul class="row spis_works col-12">
+            {% if order.date_completed %}
+            <li class="col-1" style="background:#7bf57b">{{ order.id }}</li>
+            {% else %}
+            <li class="col-1">{{ order.id }}</li>
+            {% endif %}
+            <li class="col-4" style="text-align: left;">{{ order.client }}</li>
+            <li class="col-2">{{ order.vin_number }}</li>
+            <li class="col-1">{{ order.registration_number }}</li>
+            <li class="col-1">{{ order.date_start|date:'d.m.Y' }}</li>
+            <li class="col-1">{{ order.date_completed|date:'d.m.Y' }}</li>
+            <li class="col-1">{{ order.final_price }}</li>
+            {% for key, value in production.items %}
+            {% if key == order.id %}
+            <li class="col-1">{{ value }}</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </a>
+
+
+    <!--    список выполненных работ-->
+    <ul class="row name_fields col-12" style="justify-content: flex-end; margin-top:5px;">
+        <li class="col-1">№</li>
+        <li class="col-7">Работа</li>
+        <li class="col-1">Час(руб.)</li>
+        <li class="col-1">Итог(руб.)</li>
+        <li class="col-1">Норм/час</li>
+    </ul>
+
+    {% for work in works %}
+    {% if work.order.id == order.id %}
+    <ul class="row spis_works col-12" style="justify-content: flex-end; background:white;">
+        <li class="col-1">{{ forloop.counter }}</li>
+        <li class="col-7" style="text-align: left;">{{ work.name }}</li>
+        <li class="col-1">{{ work.price }}</li>
+        <li class="col-1">{{ work.final_price|floatformat:2 }}</li>
+        <li class="col-1">{{ work.standard }}</li>
+    </ul>
+    {% endif %}
+    {% endfor %}
+
+</div>
+{% endfor %}
+
+<!--пагинация-->
+<div class="pagination">
+    <span class="step-links">
+        {% if orders.has_previous %}
+            <a href="?page=1">&laquo; Первая</a>
+            <a href="?page={{ orders.previous_page_number }}">&#8592;</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ orders.number }} из {{ orders.paginator.num_pages }}.
+        </span>
+
+        {% if orders.has_next %}
+            <a href="?page={{ orders.next_page_number }}">&#8594;</a>
+            <a href="?page={{ orders.paginator.num_pages }}">Последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

@@ -7,7 +7,21 @@ a, li, p, h1, h2, h3, h4, button{
 	color: black;
 }
 footer{
-	background: #0D3CD4;
+	background: #0DA5D4;
+}
+footer{
+    position:fixed;
+   left:0px;
+   bottom:0px;
+   height:20px;
+   width:100%;
+}
+button{
+	cursor: pointer;
+}
+footer p{
+	text-align: center;
+	color: white;
 }
 li{
 	display: inline-block;
@@ -16,7 +30,8 @@ li{
 .footer_menu{
 	padding: 10px 0px 10px 0px;	
 	text-align: center;
-	justify-content: flex-end
+	justify-content: flex-end;
+	background: #0D3CD4;
 }
 .footer_menu a{
 	color: white;
@@ -61,7 +76,10 @@ li{
 	background: #e7eaff;
 	text-decoration: underline 1.5px;
 }
-
+.add_ord{
+	cursor: pointer;
+	display: block;
+}
 
 .service__base_menu a{
 	display: block;
@@ -138,8 +156,8 @@ li{
 
 .add_order, .add_work, .add_parts{
 	margin: 10px 0px 10px 0px;
-	border: 2px solid #154bff;
-	border-radius: 10px;
+	border: 2px solid;
+	border-radius: 5px;
 }
 .add_order form, .add_work form{
 	justify-content: space-between;
@@ -152,9 +170,10 @@ li{
 	outline: none;
 }
 .add_order button, .add_work button{
-	margin: 10px 0px 5px 0px;
-	border: 2px solid #154bff;
-	border-radius: 5px;
+/*	margin: 10px 0px 5px 0px;*/
+	border: 1,5px solid;
+    border-radius: 5px;
+	cursor: pointer;
 }
 .add_order textarea, .add_work textarea{
 	margin: 5px 0px 5px 0px;
@@ -173,7 +192,7 @@ li{
 }
 .add_work select{
 	width: 100%;
-	font-size: 18px;
+/*	font-size: 18px;*/
 	letter-spacing: 1px;
 }
 li.block_img{
@@ -205,6 +224,7 @@ li.search_order{
 	background: #01f3eb26;
 	border: none;
 	border-left: 2px solid #154bff;
+	cursor: pointer;
 }
 .search_order button:hover{
 	background: #3b69ff;
@@ -265,6 +285,68 @@ th, td {
 	margin-bottom: 20px;	
 }
 
+.form_register{
+	justify-content: center;
+}
+.form_register form, .loginuser form{
+	border: 2px solid;
+	padding: 20px;
+	border-radius: 5px;
+}
+.form_register h1{
+	margin-bottom: 20px;
+}
+.form_register input, .form_register select{
+	width: 100%;
+	margin-bottom: 10px;
+}
+.form_register button, .loginuser button{
+	cursor: pointer;
+}
+.back_button{
+	position: fixed;
+	margin-left: 0px;
+    height: 100%;
+	width: 3%;
+	background: white;
+	border: none;
+	color: white;
+	font-size: 18px;
+	font-weight: 900;
+}
+.back_button:hover{
+	transition-duration: 1s;
+	background: #01f3eb26;
+	color: black;
+}
+.pagination{
+	margin-top: 30px;
+	text-align: center;
+}
+.pagination a{
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 2px;
+    background: #01f3eb26;
+}
+.current{
+	border: 1px solid black;
+	padding: 10px;
+	margin-right: 5px;
+	border-radius: 2px;
+}
+.btn_close_order{
+	margin-top: 10px;
+    background: white;
+    border: 2px solid #154bff;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+}
+.btn_close_order:hover{
+	background: #e7eaff;
+	text-decoration: underline 1.5px;
+}
 
 
 
