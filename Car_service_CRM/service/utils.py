@@ -8,8 +8,8 @@ import os
 def paginator_order(request, orders):
     paginator = Paginator(orders, 20)
     page_number = request.GET.get('page')
-    orders = paginator.get_page(page_number)
-    return orders
+    orders_s = paginator.get_page(page_number)
+    return orders_s
 
 
 def search_order(search_query, start_date, end_date, bull):
@@ -48,6 +48,7 @@ def search_order(search_query, start_date, end_date, bull):
     return orders
 
 
+# печать з/наряда
 def order_print(request, order):
     works = WorksOrder.objects.filter(order=order)
     doc = aw.Document()

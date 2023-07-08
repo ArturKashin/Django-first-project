@@ -89,7 +89,6 @@ def view_workers(request):
 @login_required(login_url='loginuser')
 @master_access
 def view_worker(request, pk):
-    global orders
     person = Person.objects.get(user=request.user)
     worker = Person.objects.get(id=pk)
     works = WorksOrder.objects.filter(executor=worker.user)
@@ -101,13 +100,12 @@ def view_worker(request, pk):
             sort_work.append(work.order.id)
 
     # ручной поиск
-    if request.method == "GET":
-        search_query = request.GET.get('search', '')
-        start_date = request.GET.get('start-date', '')
-        end_date = request.GET.get('end-date', '')
+    search_query = request.GET.get('search', '')
+    start_date = request.GET.get('start-date', '')
+    end_date = request.GET.get('end-date', '')
 
-        orders = search_worker_order(sort_work, search_query, start_date, end_date)
-        orders = paginator_order(request, orders)
+    orders = search_worker_order(sort_work, search_query, start_date, end_date)
+    orders = paginator_order(request, orders)
 
     # подсчет норм/часов в наряде
     production = {}
