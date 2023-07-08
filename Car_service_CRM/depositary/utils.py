@@ -4,14 +4,11 @@ from django.shortcuts import redirect
 
 from depositary.forms import DepositaryForm, DepositaryOwnerForm
 from depositary.models import Depositary
-from service.forms import WorksForm
 from users.models import Person
-from service.models import Orders, WorksOrder
 
 
 def master_access(func):
     def index(request, *args, **kwargs):
-        # person = Person.objects.get(user=request.user)
         if Person.objects.get(user=request.user).jod_title == "Мастер":
             return func(request, *args, **kwargs)
         return redirect('order-for-mechanical')

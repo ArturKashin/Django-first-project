@@ -22,8 +22,6 @@
             <li class="col-3">{{ user.first_name }}</li>
             {% if person.jod_title == 'Мастер' %}
             <li class="col-2"><a href="{% url 'register_user' %}">Зарегистрировать</a></li>
-            {% elif person.jod_title == 'Механик' %}
-            <li class="col-2">Выработка: {{ person.time }} н/ч</li>
             {% endif %}
             <li class="col-1">
                 <form action="{% url 'logoutuser' %}" method="post">

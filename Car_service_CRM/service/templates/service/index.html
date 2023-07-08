@@ -4,13 +4,14 @@
 <div class="container">
     <div class="row">
 
+<!--        поиск-->
         {% if person.jod_title == "Мастер" %}
         <div class="row add__order_menu service__base_menu col-12">
             <ul class="row col-12" style="justify-content: space-between">
                 {% if user.is_authenticated %}
-                <li class="col-2 add_ord"><label for="add_order">Создать з/наряд</label><input id="add_order" type="checkbox"></li>
+                <li class="col-2 add_ord"><label for="add_order">Открыть з/наряд</label><input id="add_order" type="checkbox"></li>
                 <li class="col-9 search_order">
-                    <form class="row col-12" action="{% url 'index' %}">
+                    <form class="row col-12 search_or" action="{% url 'index' %}">
                         <input class="col-6" type="search" placeholder="Поиск" name="search">
                         <input class="col-2" type="date" name="start-date" min="2023-01-01">
                         <input class="col-2" type="date" name="end-date" min="2023-01-01">
@@ -93,7 +94,7 @@
         </span>
 
         {% if orders.has_next %}
-            <a href="?page={{ orders.next_page_number }}">&#8594;</a>
+            <a href="?page={{ orders.next_page_number }}{% if request.GET.orders_s %}&orders_s={{ request.GET.orders_s }}{% endif %}">&#8594;</a>
             <a href="?page={{ orders.paginator.num_pages }}">Последняя &raquo;</a>
         {% endif %}
     </span>

@@ -44,8 +44,10 @@
                     Итог: {{ sum_works_detail|floatformat:2 }} руб.
                 </li>
 
-                <li class="col-6">Дата открытия: {{ order.date_start }}</li>
-                <li class="col-6">Дата закрытия: {{ order.date_completed }}</li>
+                <li class="col-4">Мастер приемщик: {{ order.master|title }}</li>
+                <li class="col-4">Дата открытия: {{ order.date_start }}</li>
+                <li class="col-4">Дата закрытия: {{ order.date_completed }}</li>
+
 
             </ul>
         </div>

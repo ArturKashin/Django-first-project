@@ -1,9 +1,10 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 # декоратор для ограничения доступа незарегистрированным пользователям
 from django.contrib.auth.decorators import login_required
 from .forms import OrdersForm, WorksForm
 from .models import Orders, WorksOrder
-from .utils import search_order, paginator_order
+from .utils import search_order, paginator_order, order_print
 from depositary.models import Depositary
 from django.db.models import Q, Sum
 from users.models import Person
@@ -37,8 +38,8 @@ def index(request):
         end_date = request.GET.get('end-date', '')
         open_orders = True
 
-        orders = search_order(search_query, start_date, end_date, open_orders)
-        orders = paginator_order(request, orders)
+        orders_s = search_order(search_query, start_date, end_date, open_orders)
+        orders = paginator_order(request, orders_s)
 
         context = {
             'orders': orders,
@@ -63,6 +64,8 @@ def index(request):
 
 
 # повторное открытие наряда
+@login_required(login_url='loginuser')
+@master_access
 def reopening_order(request, pk):
     if request.method == "GET":
         person = Person.objects.get(user=request.user)
@@ -161,6 +164,9 @@ def closed_works(request, pk):
     sum_detail = detail.aggregate(Sum('output_cost'))
     sum_detail = sum_detail['output_cost__sum']
     sum_works_detail = (0 if sum_detail is None else sum_detail) + order.final_price
+
+    # печать наряда
+    # order_print(request, order)
 
     context = {
         'works': works,

@@ -45,6 +45,7 @@
                 <li class="col-1">Количество, шт.</li>
             </ul>
             {% for part in parts %}
+            {% if forloop.counter <= 10 %}
             <ul class="row spis_parts col-12">
                 <li class="col-2">{{ part.part_number }}</li>
                 <li class="col-4" style="text-align: left;">{{ part.part_name|capfirst }}</li>
@@ -57,6 +58,7 @@
                         href="{% url 'add-detail' order.id part.id %}"><img src="{% static 'image/257.png' %}"
                                                                             alt="Статус"></a></li>
             </ul>
+            {% endif %}
             {% endfor %}
         </div>
 
@@ -95,7 +97,8 @@
                 <li class="col-4" style="text-align:right; background:#7bf57b">
                     Итог: {{ sum_works_detail|floatformat:2 }} руб.
                 </li>
-                <li class="col-12">Дата открытия: {{ order.date_start }}</li>
+                <li class="col-8">Мастер приемщик: {{ order.master|title }}</li>
+                <li class="col-4">Дата открытия: {{ order.date_start }}</li>
 
             </ul>
         </div>
